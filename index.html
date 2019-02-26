@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <title>Bootstrap 4, from LayoutIt!</title>
+
+    <meta name="description" content="Source code generated using layoutit.com">
+    <meta name="author" content="LayoutIt!">
+
+    <link href="css/bootstrap.min.css" rel="stylesheet">
+    <link href="css/style.css" rel="stylesheet">
+    <script>if (typeof module === 'object') {window.module = module; module = undefined;}</script>
+    <script src="js/jquery.min.js"></script>
+    <script src="js/bootstrap.min.js"></script>
+    <script src="js/scripts.js"></script>
+<script>if (window.module) module = window.module;</script>
+</head>
+<body>
+
+<div class="container-fluid">
+    <div class="row" id="nav">
+        <div class="col-md-12">
+            <ul class="nav nav-tabs">
+                <li class="nav-item">
+                    <a class="nav-link " href="#">管理</a>
+                </li>
+                <li class="nav-item" >
+                    <a id="command_nva" class="nav-link active" href="#">指令生成</a>
+                </li>
+                <li class="nav-item"  >
+                    <a id="check_nva" class="nav-link" href="#">核查</a>
+                </li>
+            </ul>
+        </div>
+    </div>
+
+   	<div class="row" id="command">
+		<div class="col-md-8">
+			<h2>
+				Heading
+			</h2>
+			<p>
+				Donec id elit non mi porta gravida at eget metus. Fusce dapibus, tellus ac cursus commodo, tortor mauris condimentum nibh, ut fermentum massa justo sit amet risus. Etiam porta sem malesuada magna mollis euismod. Donec sed odio dui.
+			</p>
+			<p>
+				<a class="btn" href="#">View details »</a>
+			</p>
+		</div>
+		<div class="col-md-4">
+			<form role="form">
+				<div class="form-group">
+
+					<label for="exampleInputEmail1">
+						Email address
+					</label>
+					<input type="email" class="form-control" id="exampleInputEmail3" />
+				</div>
+				<div class="form-group">
+
+					<label for="exampleInputPassword1">
+						Password
+					</label>
+					<input type="password" class="form-control" id="exampleInputPassword1" />
+				</div>
+				<div class="form-group">
+
+					<label for="exampleInputFile">
+						File input
+					</label>
+					<input type="file" class="form-control-file" id="exampleInputFile" />
+					<p class="help-block">
+						Example block-level help text here.
+					</p>
+				</div>
+				<div class="checkbox">
+
+					<label>
+						<input type="checkbox" /> Check me out
+					</label>
+				</div>
+				<button type="submit" class="btn btn-primary">
+					Submit
+				</button>
+			</form>
+		</div>
+	</div>
+
+    <div class="row" id="check">
+        <div class="col-md-12">
+            <button type="button" class="btn btn-info btn-md">
+                导入本地数据
+            </button>
+            <h3>
+                核查模块
+            </h3>
+            <div class="row">
+                <div class="col-md-6">
+                    <span class="badge badge-default">核查指令</span>
+                    <input type="email" class="form-control" id="exampleInputEmail1"/>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-6">
+                    <span class="badge badge-default">核查模块</span>
+                    <input type="email" class="form-control" id="exampleInputEmail2"/>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-4">
+
+                    <button type="button" class="btn btn-success">
+                        Button
+                    </button>
+                </div>
+                <div class="col-md-4">
+
+                    <button type="button" class="btn btn-success">
+                        Button
+                    </button>
+                </div>
+                <div class="col-md-4">
+
+                    <button type="button" class="btn btn-success">
+                        Button
+                    </button>
+                </div>
+            </div>
+            <button type="button" class="btn btn-success">
+                开始核查
+            </button>
+        </div>
+    </div>
+</div>
+
+<script>
+    $(function() {
+        $('#command').show();
+        $('#check').hide();
+        $('#command_nva').on('click', function () {
+            $('#command').show();
+            $('#check').hide();
+            $('#check_nva').removeClass('active');
+            $('#command_nva').addClass('active');
+        })
+        $('#check_nva').on('click', function () {
+            $('#command').hide();
+            $('#check').show();
+            $('#check_nva').addClass('active');
+            $('#command_nva').removeClass('active');
+        })
+    });
+</script>
+</body>
+</html>
