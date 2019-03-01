@@ -12,11 +12,14 @@
 
     <link href="css/bootstrap.min.css" rel="stylesheet">
     <link href="css/style.css" rel="stylesheet">
-    <script>if (typeof module === 'object') {window.module = module; module = undefined;}</script>
+    <script>if (typeof module === 'object') {
+        window.module = module;
+        module = undefined;
+    }</script>
     <script src="js/jquery.min.js"></script>
     <script src="js/bootstrap.min.js"></script>
     <script src="js/scripts.js"></script>
-<script>if (window.module) module = window.module;</script>
+    <script>if (window.module) module = window.module;</script>
 </head>
 <body>
 
@@ -27,66 +30,68 @@
                 <li class="nav-item">
                     <a class="nav-link " href="#">管理</a>
                 </li>
-                <li class="nav-item" >
+                <li class="nav-item">
                     <a id="command_nva" class="nav-link active" href="#">指令生成</a>
                 </li>
-                <li class="nav-item"  >
+                <li class="nav-item">
                     <a id="check_nva" class="nav-link" href="#">核查</a>
                 </li>
             </ul>
         </div>
     </div>
 
-   	<div class="row" id="command">
-		<div class="col-md-8">
-			<h2>
-				Heading
-			</h2>
-			<p>
-				Donec id elit non mi porta gravida at eget metus. Fusce dapibus, tellus ac cursus commodo, tortor mauris condimentum nibh, ut fermentum massa justo sit amet risus. Etiam porta sem malesuada magna mollis euismod. Donec sed odio dui.
-			</p>
-			<p>
-				<a class="btn" href="#">View details »</a>
-			</p>
-		</div>
-		<div class="col-md-4">
-			<form role="form">
-				<div class="form-group">
+    <div class="row" id="command">
+        <div class="col-md-8">
+            <h2>
+                Heading
+            </h2>
+            <p>
+                Donec id elit non mi porta gravida at eget metus. Fusce dapibus, tellus ac cursus commodo, tortor mauris
+                condimentum nibh, ut fermentum massa justo sit amet risus. Etiam porta sem malesuada magna mollis
+                euismod. Donec sed odio dui.
+            </p>
+            <p>
+                <a class="btn" href="#">View details »</a>
+            </p>
+        </div>
+        <div class="col-md-4">
+            <form role="form">
+                <div class="form-group">
 
-					<label for="exampleInputEmail1">
-						Email address
-					</label>
-					<input type="email" class="form-control" id="exampleInputEmail3" />
-				</div>
-				<div class="form-group">
+                    <label for="exampleInputEmail1">
+                        Email address
+                    </label>
+                    <input type="email" class="form-control" id="exampleInputEmail3"/>
+                </div>
+                <div class="form-group">
 
-					<label for="exampleInputPassword1">
-						Password
-					</label>
-					<input type="password" class="form-control" id="exampleInputPassword1" />
-				</div>
-				<div class="form-group">
+                    <label for="exampleInputPassword1">
+                        Password
+                    </label>
+                    <input type="password" class="form-control" id="exampleInputPassword1"/>
+                </div>
+                <div class="form-group">
 
-					<label for="exampleInputFile">
-						File input
-					</label>
-					<input type="file" class="form-control-file" id="exampleInputFile" />
-					<p class="help-block">
-						Example block-level help text here.
-					</p>
-				</div>
-				<div class="checkbox">
+                    <label for="exampleInputFile">
+                        File input
+                    </label>
+                    <input type="file" class="form-control-file" id="exampleInputFile"/>
+                    <p class="help-block">
+                        Example block-level help text here.
+                    </p>
+                </div>
+                <div class="checkbox">
 
-					<label>
-						<input type="checkbox" /> Check me out
-					</label>
-				</div>
-				<button type="submit" class="btn btn-primary">
-					Submit
-				</button>
-			</form>
-		</div>
-	</div>
+                    <label>
+                        <input type="checkbox"/> Check me out
+                    </label>
+                </div>
+                <button type="submit" class="btn btn-primary">
+                    Submit
+                </button>
+            </form>
+        </div>
+    </div>
 
     <div class="row" id="check">
         <div class="col-md-12">
@@ -136,7 +141,7 @@
 </div>
 
 <script>
-    $(function() {
+    $(function () {
         $('#command').show();
         $('#check').hide();
         $('#command_nva').on('click', function () {
@@ -153,23 +158,39 @@
         });
         $('#begin_check').on('click', function () {
             $('#begin_check').prop('disabled', true);
+            const remote = require('electron').remote;
+            const app = remote.app;
+            var path1 = app.getPath('userData');
+            console.log(path1);
+            const path = require('path');
             var Client = require('ssh2').Client;
 
             var conn = new Client();
             conn.on('ready', function () {
                 console.log('Client :: ready');
-                conn.exec('uptime', function (err, stream) {
-                    $('#begin_check').prop('disabled', false);
-                    if (err) throw err;
-                    stream.on('close', function (code, signal) {
-                        console.log('Stream :: close :: code: ' + code + ', signal: ' + signal);
+                conn.shell(function (err, stream) {
+                    if (err) {
+                        console.log('shell error');
+                        throw err;
+                    }
+                    const fs = require('fs');
+                    var fd = fs.openSync(path.join(path1, 'logs.txt'), 'w');
+                    stream.on('close', function () {
+                        console.log('Stream :: close');
                         conn.end();
+                        fs.closeSync(fd);
+                        $('#begin_check').prop('disabled', false);
                     }).on('data', function (data) {
+                        fs.writeSync(fd, data);
                         console.log('STDOUT: ' + data);
                     }).stderr.on('data', function (data) {
                         console.log('STDERR: ' + data);
                     });
+                    stream.end('ls -l\ndf\nexit\n');
                 });
+            }).on('error', function (err) {
+                console.log(err);
+
             }).connect({
                 host: 'online.clavier.zencoo.com',
                 port: 22,
