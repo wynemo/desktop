@@ -55,7 +55,7 @@
                 </div>
                 <div class="col-md-4">
 
-                    <button type="button" class="btn btn-success">
+                    <button type="button" class="btn btn-success" id="import_command_template">
                         导入
                     </button>
                 </div>
@@ -180,6 +180,22 @@
                     }
 
                     alert("The file has been succesfully saved");
+                });
+            }
+        });
+    }, false);
+
+    document.getElementById('import_command_template').addEventListener('click', function () {
+        dialog.showOpenDialog(function (fileNames) {
+            if (fileNames === undefined) {
+                console.log("No file selected");
+            } else {
+                fs.readFile(fileNames[0], 'utf-8', function (err, data) {
+                    if (err) {
+                        alert("An error ocurred reading the file :" + err.message);
+                        return;
+                    }
+                    document.getElementById("command_text").value = data;
                 });
             }
         });
