@@ -74,19 +74,19 @@
             <div class="row">
                 <div class="col-md-6">
                     <span class="badge badge-default">ID1</span>
-                    <input type="email" class="form-control" id="ID1"/>
+                    <input type="email" class="form-control" id="command_id1"/>
                 </div>
             </div>
             <div class="row">
                 <div class="col-md-6">
                     <span class="badge badge-default">ID2</span>
-                    <input type="email" class="form-control" id="ID2"/>
+                    <input type="email" class="form-control" id="command_id2"/>
                 </div>
             </div>
             <div class="row">
                 <div class="col-md-6">
                     <span class="badge badge-default">ID3</span>
-                    <input type="email" class="form-control" id="ID3"/>
+                    <input type="email" class="form-control" id="command_id3"/>
                 </div>
             </div>
             <div class="row">
@@ -157,6 +157,15 @@
     var remote = require('electron').remote;
     var dialog = remote.dialog;
     const fs = require('fs');
+
+    document.getElementById('command_begin').addEventListener('click', function () {
+        var content = document.getElementById("command_text").value;
+        for (var i = 1; i < 4; i++) {
+            var text = document.getElementById("command_id" + i).value;
+            content = content.replace('ID' + i, text, 'g');
+        }
+        document.getElementById("command_text").value = content;
+    }, false);
 
     document.getElementById('export_command_template').addEventListener('click', function () {
         var content = document.getElementById("command_text").value;
