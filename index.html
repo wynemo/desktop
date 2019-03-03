@@ -42,14 +42,14 @@
 
     <div class="row" id="command">
         <div class="col-md-8">
-            <label for="story">模块</label>
+            <label for="command_text">模块</label>
 
-            <textarea id="story" name="story"
+            <textarea id="command_text" name="模块"
                       rows="5" cols="33"></textarea>
             <div class="row">
                 <div class="col-md-4">
 
-                    <button type="button" class="btn btn-success">
+                    <button type="button" class="btn btn-success" id="export_command_template">
                         导出
                     </button>
                 </div>
@@ -63,7 +63,7 @@
             <div class="row">
                 <div class="col-md-6">
 
-                    <button type="button" class="btn btn-success">
+                    <button type="button" class="btn btn-success" id="command_begin">
                         开始生成
                     </button>
                 </div>
@@ -92,13 +92,13 @@
             <div class="row">
                 <div class="col-md-4">
 
-                    <button type="button" class="btn btn-success">
+                    <button type="button" class="btn btn-success" id="export_command">
                         导出变量
                     </button>
                 </div>
                 <div class="col-md-4">
 
-                    <button type="button" class="btn btn-success">
+                    <button type="button" class="btn btn-success" id="import_command">
                         导入变量
                     </button>
                 </div>
@@ -154,6 +154,28 @@
 </div>
 
 <script>
+    var remote = require('electron').remote;
+    var dialog = remote.dialog;
+    const fs = require('fs');
+
+    document.getElementById('export_command_template').addEventListener('click', function () {
+        var content = document.getElementById("command_text").value;
+        dialog.showSaveDialog(function (fileName) {
+            if (fileName === undefined) {
+                console.log("No file selected");
+            } else {
+                console.log("file selected", fileName);
+                fs.writeFile(fileName, content, function (err) {
+                    if (err) {
+                        alert("An error ocurred creating the file " + err.message)
+                    }
+
+                    alert("The file has been succesfully saved");
+                });
+            }
+        });
+    }, false);
+
     $(function () {
         $('#command').show();
         $('#check').hide();
@@ -171,7 +193,6 @@
         });
         $('#begin_check').on('click', function () {
             $('#begin_check').prop('disabled', true);
-            const remote = require('electron').remote;
             const app = remote.app;
             var path1 = app.getPath('userData');
             console.log(path1);
@@ -186,7 +207,6 @@
                         console.log('shell error');
                         throw err;
                     }
-                    const fs = require('fs');
                     var fd = fs.openSync(path.join(path1, 'logs.txt'), 'w');
                     stream.on('close', function () {
                         console.log('Stream :: close');
