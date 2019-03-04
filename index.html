@@ -162,7 +162,7 @@
         var content = document.getElementById("command_text").value;
         for (var i = 1; i < 4; i++) {
             var text = document.getElementById("command_id" + i).value;
-            content = content.replace('ID' + i, text, 'g');
+            content = content.replace(new RegExp('ID' + i, 'g'), text, 'g');
         }
         document.getElementById("command_text").value = content;
     }, false);
