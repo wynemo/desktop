@@ -81,13 +81,13 @@
             <div class="row">
                 <div class="col-md-4">
 
-                    <button type="button" class="btn btn-success" id="export_command">
+                    <button type="button" class="btn btn-success" id="export_command_variable">
                         导出变量
                     </button>
                 </div>
                 <div class="col-md-4">
 
-                    <button type="button" class="btn btn-success" id="import_command">
+                    <button type="button" class="btn btn-success" id="import_command_variable">
                         导入变量
                     </button>
                 </div>
@@ -184,6 +184,40 @@
                         return;
                     }
                     document.getElementById("command_text").value = data;
+                });
+            }
+        });
+    }, false);
+
+    document.getElementById('export_command_variable').addEventListener('click', function () {
+        var content = document.getElementById("command_variable").value;
+        dialog.showSaveDialog(function (fileName) {
+            if (fileName === undefined) {
+                console.log("No file selected");
+            } else {
+                console.log("file selected", fileName);
+                fs.writeFile(fileName, content, function (err) {
+                    if (err) {
+                        alert("An error ocurred creating the file " + err.message)
+                    }
+
+                    alert("The file has been succesfully saved");
+                });
+            }
+        });
+    }, false);
+
+    document.getElementById('import_command_variable').addEventListener('click', function () {
+        dialog.showOpenDialog(function (fileNames) {
+            if (fileNames === undefined) {
+                console.log("No file selected");
+            } else {
+                fs.readFile(fileNames[0], 'utf-8', function (err, data) {
+                    if (err) {
+                        alert("An error ocurred reading the file :" + err.message);
+                        return;
+                    }
+                    document.getElementById("command_variable").value = data;
                 });
             }
         });
