@@ -60,6 +60,7 @@
                     </button>
                 </div>
             </div>
+            <br>
             <div class="row">
                 <div class="col-md-6">
 
@@ -73,20 +74,8 @@
         <div class="col-md-4">
             <div class="row">
                 <div class="col-md-6">
-                    <span class="badge badge-default">ID1</span>
-                    <input type="email" class="form-control" id="command_id1"/>
-                </div>
-            </div>
-            <div class="row">
-                <div class="col-md-6">
-                    <span class="badge badge-default">ID2</span>
-                    <input type="email" class="form-control" id="command_id2"/>
-                </div>
-            </div>
-            <div class="row">
-                <div class="col-md-6">
-                    <span class="badge badge-default">ID3</span>
-                    <input type="email" class="form-control" id="command_id3"/>
+                    <textarea id="command_variable" name="模块"
+                              rows="5" cols="33"></textarea>
                 </div>
             </div>
             <div class="row">
@@ -159,12 +148,11 @@
     const fs = require('fs');
 
     document.getElementById('command_begin').addEventListener('click', function () {
-        var content = document.getElementById("command_text").value;
-        for (var i = 1; i < 4; i++) {
-            var text = document.getElementById("command_id" + i).value;
-            content = content.replace(new RegExp('ID' + i, 'g'), text, 'g');
-        }
-        document.getElementById("command_text").value = content;
+        var content = '`' + document.getElementById("command_text").value + '`';
+        var variable = document.getElementById("command_variable").value;
+        eval(variable);
+        var o = eval(content);
+        document.getElementById("command_text").value = o;
     }, false);
 
     document.getElementById('export_command_template').addEventListener('click', function () {
