@@ -96,56 +96,54 @@
     </div>
 
     <div class="row" id="check">
-        <div class="col-md-12">
+        <!--<div class="row">-->
             <button type="button" class="btn btn-info btn-md">
                 导入本地数据
             </button>
-            <h3>
-                核查模块
-            </h3>
+            <!--<h3>-->
+                <!--核查模块-->
+            <!--</h3>-->
+        <!--</div>-->
+        <div class="col-md-12">
             <div class="row">
-                <div class="col-md-6">
-                    <span class="badge badge-default">核查指令</span>
-                    <input type="email" class="form-control" id="exampleInputEmail1"/>
-                </div>
-            </div>
-            <div class="row">
-                <div class="col-md-6">
-                    <span class="badge badge-default">核查模块</span>
-                    <input type="email" class="form-control" id="exampleInputEmail2"/>
-                </div>
-            </div>
-            <div class="row">
-                <div class="col-md-4">
-
-                    <button type="button" class="btn btn-success">
-                        Button
-                    </button>
+                <div class="col-md-8">
+                    <label for="check_rules">规则</label><textarea id="check_rules" name="模块"
+                                                               rows="5" cols="33"></textarea>
                 </div>
                 <div class="col-md-4">
+                    <label for="check_result">结果</label><textarea id="check_result" name="模块"
+                                                                rows="5" cols="33"></textarea>
 
-                    <button type="button" class="btn btn-success">
-                        Button
-                    </button>
                 </div>
-                <div class="col-md-4">
 
-                    <button type="button" class="btn btn-success">
-                        Button
-                    </button>
-                </div>
             </div>
             <button type="button" class="btn btn-success" id="begin_check">
                 开始核查
             </button>
         </div>
-    </div>
+        </div>
 </div>
 
 <script>
     var remote = require('electron').remote;
     var dialog = remote.dialog;
     const fs = require('fs');
+    const app = remote.app;
+    const path = require('path');
+
+    document.getElementById('begin_check').addEventListener('click', function () {
+        var content = document.getElementById("check_rules").value;
+        let path1 = app.getPath('userData');
+        let rules_path = path.join(path1, 'rules.txt');
+        console.log(rules_path);
+        fs.writeFile(rules_path, content, function (err) {
+            if (err) {
+                alert("An error ocurred creating the file " + err.message)
+                return;
+            }
+            //todo
+        });
+    }, false);
 
     document.getElementById('command_begin').addEventListener('click', function () {
         var content = '`' + document.getElementById("command_text").value + '`';
@@ -240,10 +238,8 @@
         });
         $('#begin_check').on('click', function () {
             $('#begin_check').prop('disabled', true);
-            const app = remote.app;
             var path1 = app.getPath('userData');
             console.log(path1);
-            const path = require('path');
             var Client = require('ssh2').Client;
 
             var conn = new Client();
