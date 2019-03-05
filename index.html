@@ -131,7 +131,7 @@
     const app = remote.app;
     const path = require('path');
 
-    const PY_DIST_FOLDER = 'pycalcdist'
+    const PY_DIST_FOLDER = 'dist'
     const PY_FOLDER = 'pycalc'
     const PY_MODULE = 'check' // without .py suffix
 
@@ -145,9 +145,24 @@
             return path.join(__dirname, PY_FOLDER, PY_MODULE + '.py')
         }
         if (process.platform === 'win32') {
-            return path.join(__dirname, PY_DIST_FOLDER, PY_MODULE, PY_MODULE + '.exe')
+            return path.join(__dirname, '..', '..', PY_DIST_FOLDER, PY_MODULE + '.exe')
         }
-        return path.join(__dirname, PY_DIST_FOLDER, PY_MODULE, PY_MODULE)
+        return path.join(__dirname, '..', '..', PY_DIST_FOLDER, PY_MODULE, PY_MODULE)
+    }
+    const createPyProc = (param) => {
+        let script = getScriptPath()
+        console.log('script', script);
+        var path1 = app.getPath('userData');
+        console.log(path1);
+        if (guessPackaged()) {
+            pyProc = require('child_process').execFile(script, [param])
+        } else {
+            pyProc = require('child_process').spawn('python', [script, param])
+        }
+
+        if (pyProc != null) {
+            //console.log(pyProc)
+        }
     }
 
     document.getElementById('begin_check').addEventListener('click', function () {
@@ -160,7 +175,7 @@
                 alert("An error ocurred creating the file " + err.message)
                 return;
             }
-            //todo
+            createPyProc(rules_path);
         });
     }, false);
 
