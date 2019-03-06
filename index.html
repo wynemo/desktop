@@ -97,9 +97,19 @@
 
     <div class="row" id="check">
         <!--<div class="row">-->
-            <button type="button" class="btn btn-info btn-md" id="set_file_path">
-                导入本地数据
-            </button>
+        <div class="row">
+            <div class="col-md-8">
+                <button type="button" class="btn btn-info btn-md" id="set_file_path">
+                    导入本地数据
+                </button>
+            </div>
+            <div class="col-md-4">
+                <label>
+                    当前路径
+                    <input id="current_path" disabled>
+                </label>
+            </div>
+        </div>
             <!--<h3>-->
                 <!--核查模块-->
             <!--</h3>-->
@@ -200,6 +210,7 @@ stanard:llll
                 console.log("No file selected");
             } else {
                 console.log("file selected", fileName);
+                $('#current_path').val(fileName);
             }
         });
     }, false);
@@ -214,7 +225,13 @@ stanard:llll
                 alert("An error ocurred creating the file " + err.message)
                 return;
             }
-            createPyProc(rules_path, '/Users/zdb/Documents/private/electron-quick-start/pycalc/2.txt');
+            let current_path = $('#current_path').val();
+            console.log('current_path' ,current_path);
+            if (current_path.length === 0 ) {
+                alert('请先选择要检查的文件');
+                return;
+            }
+            createPyProc(rules_path, current_path);
         });
     }, false);
 
