@@ -101,7 +101,12 @@ def read_file(file_path, configs):
                                 if check_rule['standard']:
                                     standard = check_rule['standard']
                                     result = check_result(check_rule['calc'], standard, result)
-                                print('path is %s, rule is %s, keyword is %s, result is %s' % (file_path, current_rule, keyword_result, result))
+                                s = 'path is %s, rule is %s, keyword is %s, result is %s' % (file_path, current_rule, keyword_result, result)
+                                if sys.platform == 'win32':
+                                    try:
+                                        print(s.decode('gbk').encode('utf-8'))
+                                    except:
+                                        print(s)
 
 
 if __name__ == '__main__':
