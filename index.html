@@ -110,16 +110,17 @@
                     <label for="check_rules">规则</label><textarea id="check_rules" name="模块"
                                                                rows="5" cols="33">
 rule:display version
-keyword:xxx
-splitword:,
-calc:=
-stanrd:qqqq
 
-rule:display machine
-keyword:xxx
-splitword:,
-calc:=
-stanrd:qqqq
+keyword:Patch version : V600R007SPH105
+splitword::
+calc:==
+standard:V600R007SPH105
+
+rule:display version2
+keyword:Patch version : V600R007SPH105
+splitword::
+calc:==
+standard:V600R007SPH1051
 
 keyword:yyy
 splitword:,
@@ -166,19 +167,30 @@ stanard:llll
         }
         return path.join(__dirname, '..', '..', PY_DIST_FOLDER, PY_MODULE, PY_MODULE)
     }
-    const createPyProc = (param) => {
+    const createPyProc = (rules_path, file_path) => {
         let script = getScriptPath()
         console.log('script', script);
         var path1 = app.getPath('userData');
         console.log(path1);
         if (guessPackaged()) {
-            pyProc = require('child_process').execFile(script, [param])
+            pyProc = require('child_process').execFile(script, [rules_path, file_path])
         } else {
-            pyProc = require('child_process').spawn('python', [script, param])
+            pyProc = require('child_process').spawn('python', [script, rules_path, file_path])
         }
 
         if (pyProc != null) {
             //console.log(pyProc)
+            $('#check_result').val('');
+            var result_text = '';
+            pyProc.stdout.on('data', (data) => {
+                console.log(`stdout: ${data}`);
+                result_text += data;
+                $('#check_result').val(result_text);
+            } );
+            pyProc.stderr.on('data', (data) => {
+                console.log(`stderr: ${data}`);
+                $('#check_result').val('核查失败');
+            });
         }
     }
 
@@ -192,7 +204,7 @@ stanard:llll
                 alert("An error ocurred creating the file " + err.message)
                 return;
             }
-            createPyProc(rules_path);
+            createPyProc(rules_path, '/Users/zdb/Documents/private/electron-quick-start/pycalc/2.txt');
         });
     }, false);
 
