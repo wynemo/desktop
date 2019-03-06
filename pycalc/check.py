@@ -1,6 +1,5 @@
 import sys
 
-
 state_stopped = 0
 state_rule = 1
 state_rule_stopped = 2
@@ -11,6 +10,7 @@ keyword_prefix = 'keyword:'
 splitword_prefix = 'splitword:'
 calc_prefix = 'calc:'
 standard_prefix = 'standard:'
+
 
 def read_config(path):
     """
@@ -36,7 +36,8 @@ def read_config(path):
                     state = state_rule
                 else:
                     print('ignore rule line', line)
-            elif line.startswith(keyword_prefix) or line.startswith(splitword_prefix) or line.startswith(calc_prefix) or line.startswith(standard_prefix):
+            elif line.startswith(keyword_prefix) or line.startswith(splitword_prefix) or line.startswith(
+                    calc_prefix) or line.startswith(standard_prefix):
                 if state in (state_rule, state_rule_stopped):
                     pos = line.find(':')
                     config_name = line[:pos]
@@ -51,6 +52,12 @@ def read_config(path):
                 print('ignore line', line)
     return configs
 
-rule_path = sys.argv[1]
-configs = read_config(rule_path)
-print(configs)
+
+def read_file(file_path):
+    pass
+
+
+if __name__ == '__main__':
+    rule_path = sys.argv[1]
+    configs = read_config(rule_path)
+    print(configs)
