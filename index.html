@@ -97,7 +97,7 @@
 
     <div class="row" id="check">
         <!--<div class="row">-->
-            <button type="button" class="btn btn-info btn-md">
+            <button type="button" class="btn btn-info btn-md" id="set_file_path">
                 导入本地数据
             </button>
             <!--<h3>-->
@@ -193,6 +193,16 @@ stanard:llll
             });
         }
     }
+
+    document.getElementById('set_file_path').addEventListener('click', function () {
+        dialog.showOpenDialog({ properties: ['openFile', 'openDirectory'] }, function (fileName) {
+            if (fileName === undefined) {
+                console.log("No file selected");
+            } else {
+                console.log("file selected", fileName);
+            }
+        });
+    }, false);
 
     document.getElementById('begin_check').addEventListener('click', function () {
         var content = document.getElementById("check_rules").value;
