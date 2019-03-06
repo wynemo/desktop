@@ -1,0 +1,26 @@
+<UNCS-MB-CMNET-BRAS33-ME60MiaoGF>display version
+Huawei Versatile Routing Platform Software
+VRP (R) software, Version 5.160 (ME60 V600R007C00SPC600)
+Copyright (C) 2000-2014 Huawei Technologies Co., Ltd.
+HUAWEI MultiserviceEngine 60-X16 uptime is 695 days, 4 hours, 29 minutes
+Patch version : V600R007SPH105
+MultiserviceEngine 60-X16 version information:
+
+- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+
+BKP 1 version information:
+
+<UNCS-MB-CMNET-BRAS33-ME60MiaoGF>display version2
+Huawei Versatile Routing Platform Software
+VRP (R) software, Version 5.160 (ME60 V600R007C00SPC600)
+Copyright (C) 2000-2014 Huawei Technologies Co., Ltd.
+HUAWEI MultiserviceEngine 60-X16 uptime is 695 days, 4 hours, 29 minutes
+Patch version : V600R007SPH105
+MultiserviceEngine 60-X16 version information:
+
+- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+
+BKP 1 version information:
+
+
+
