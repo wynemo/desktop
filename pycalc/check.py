@@ -1,3 +1,4 @@
+import os
 import re
 import sys
 
@@ -107,4 +108,9 @@ if __name__ == '__main__':
     rule_path = sys.argv[1]
     configs = read_config(rule_path)
     file_path = sys.argv[2]
-    read_file(file_path, configs)
+    if os.path.isfile(file_path):
+        read_file(file_path, configs)
+    elif os.path.isdir(file_path):
+        for each in os.listdir(file_path):
+            sub_path = os.path.join(file_path, each)
+            read_file(sub_path, configs)
