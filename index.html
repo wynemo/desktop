@@ -373,44 +373,35 @@ stanard:llll
         });
         $('#manage_begin').on('click', function () {
             $('#manage_begin').prop('disabled', true);
+            var SSH2Promise = require('ssh2-promise');
+            var sshconfig1 = {
+                host: 'online.conch.zencoo.com',
+                username: 'nemo',
+                identity: '/Users/zdb/.ssh/id_rsa',
+            };
+            var ssh = new SSH2Promise(sshconfig1);
+            let cmd = $('#execute_cmd').val();
             var path1 = app.getPath('userData');
             console.log(path1);
-            var Client = require('ssh2').Client;
-            let cmd = $('#execute_cmd').val();
+            // var fd = fs.openSync(path.join(path1, 'logs.txt'), 'w');
 
-            var conn = new Client();
-            conn.on('ready', function () {
-                console.log('Client :: ready');
-                conn.shell(function (err, stream) {
-                    if (err) {
-                        $('#manage_begin').prop('disabled', false);
-                        console.log('shell error');
-                        throw err;
-                    }
-                    var fd = fs.openSync(path.join(path1, 'logs.txt'), 'w');
-                    stream.on('close', function () {
-                        console.log('Stream :: close');
-                        conn.end();
-                        fs.closeSync(fd);
-                        $('#manage_begin').prop('disabled', false);
-                    }).on('data', function (data) {
-                        fs.writeSync(fd, data);
-                        console.log('STDOUT: ' + data);
-                    }).stderr.on('data', function (data) {
-                        console.log('STDERR: ' + data);
+            (async function () {
+                try {
+                    var socket = await ssh.shell();
+                    socket.on('data', (data) => {
+                        console.log(data.toString('utf8'));
+                        // fs.writeSync(fd, data);
+                        //shell content will be available here
+                    }).on('close', () => {
+                        console.log('close------')
                     });
-                    stream.end(cmd);
-                });
-            }).on('error', function (err) {
-                console.log(err);
-                $('#manage_begin').prop('disabled', false);
-
-            }).connect({
-                host: 'online.conch.zencoo.com',
-                port: 22,
-                username: 'nemo',
-                privateKey: require('fs').readFileSync('/Users/zdb/.ssh/id_rsa')
-            });
+                    socket.write(cmd)
+                } catch (e) {
+                    console.log('error', e)
+                }
+                //Can write to socket
+            }) ();
+            // fs.closeSync(fd);
         });
     });
 </script>
