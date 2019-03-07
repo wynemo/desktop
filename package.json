@@ -17,7 +17,8 @@
   "author": "GitHub",
   "license": "CC0-1.0",
   "dependencies": {
-    "ssh2": "0.5.4"
+    "ssh2": "0.5.4",
+    "telnet-client": "0.16.3"
   },
   "devDependencies": {
     "electron": "^4.0.4"
