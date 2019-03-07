@@ -107,6 +107,8 @@ def read_file(file_path, configs):
                                         print(s.decode('gbk').encode('utf-8'))
                                     except:
                                         print(s)
+                                else:
+                                    print(s)
 
 
 if __name__ == '__main__':
