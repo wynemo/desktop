@@ -437,6 +437,7 @@ stanard:llll
             function check_status() {
                 if (num <= 0) {
                     $('#manage_begin').prop('disabled', false);
+                    $('#current_path').val(ssh_folder);
                 } else {
                     setTimeout(function () {
                         check_status();
