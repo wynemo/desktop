@@ -371,36 +371,61 @@ stanard:llll
             $('#command_nva').removeClass('active');
             $('#manage_nva').addClass('active');
         });
+        function get_ssh_options(line) {
+            let pos1 = line.indexOf(":")
+            if (pos1 === -1) {
+                return undefined;
+            }
+            let user = line.substr(0, pos1);
+            let pos2 = line.indexOf('@')
+            if (pos2 === -1) {
+                return undefined;
+            }
+            let password = line.substr(pos1 + 1, pos2 - pos1 - 1)
+            let host = line.substr(pos2 + 1)
+            return {
+                host: host,
+                username: user,
+                password: password,
+                port: 10025
+            }
+        }
         $('#manage_begin').on('click', function () {
             $('#manage_begin').prop('disabled', true);
-            var SSH2Promise = require('ssh2-promise');
-            var sshconfig1 = {
-                host: 'online.conch.zencoo.com',
-                username: 'nemo',
-                identity: '/Users/zdb/.ssh/id_rsa',
-            };
-            var ssh = new SSH2Promise(sshconfig1);
+
+            let lineString = $('#devices').val();
+            let arrayOfLines = lineString.match(/[^\r\n]+/g);
+            const SSH2Promise = require('ssh2-promise');
+            let num = arrayOfLines.length;
             let cmd = $('#execute_cmd').val();
-            var path1 = app.getPath('userData');
+            const path1 = app.getPath('userData');
             console.log(path1);
+            for (let i = 0; i < num; i++) {
+                let config = get_ssh_options(arrayOfLines[i]);
+                if (config === undefined) {
+                    continue;
+                }
+                let ssh = new SSH2Promise(config);
+                (async function () {
+                    try {
+                        var socket = await ssh.shell();
+                        socket.on('data', (data) => {
+                            console.log(data.toString('utf8'));
+                            // fs.writeSync(fd, data);
+                            //shell content will be available here
+                        }).on('close', () => {
+                            console.log('close------')
+                        });
+                        socket.write(cmd)
+                    } catch (e) {
+                        console.log('error', e)
+                    }
+                }) ();
+
+            }
+
             // var fd = fs.openSync(path.join(path1, 'logs.txt'), 'w');
 
-            (async function () {
-                try {
-                    var socket = await ssh.shell();
-                    socket.on('data', (data) => {
-                        console.log(data.toString('utf8'));
-                        // fs.writeSync(fd, data);
-                        //shell content will be available here
-                    }).on('close', () => {
-                        console.log('close------')
-                    });
-                    socket.write(cmd)
-                } catch (e) {
-                    console.log('error', e)
-                }
-                //Can write to socket
-            }) ();
             // fs.closeSync(fd);
         });
     });
