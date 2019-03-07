@@ -428,6 +428,7 @@ stanard:llll
             const fsextra = require('fs-extra');
             let num = arrayOfLines.length;
             let cmd = $('#execute_cmd').val();
+            cmd += '\nexit\n';
             const path1 = app.getPath('userData');
             console.log(path1);
             let ssh_folder = path.join(path1, 'ssh');
