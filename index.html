@@ -41,20 +41,34 @@
     </div>
 
     <div class="row" id="manage">
-        <div class="col-md-8">
-            <label for="execute_cmd">执行指令</label><textarea id="execute_cmd" name="执行指令"
-                                                       rows="5" cols="33"></textarea>
-            <label for="manage_type"></label><select id="manage_type">
+        <div class="col-md-6">
+            <div class="row">
+                <label for="execute_cmd">执行指令</label>
+            </div>
+            <div class="row">
+                <textarea id="execute_cmd" name="执行指令" rows="5" cols="33"></textarea>
+            </div>
+            <br>
+            <div class="row">
+                <label for="manage_type">登陆方式</label><select id="manage_type">
                 <option value="ssh">ssh</option>
                 <option value="telnet">telnet</option>
-            </select>
-            <button type="button" class="btn btn-success" id="manage_begin">
-                开始执行
-            </button>
+                </select>
+            </div>
+            <br>
+            <div class="row">
+                <button type="button" class="btn btn-success" id="manage_begin">
+                    开始执行
+                </button>
+            </div>
         </div>
-        <div class="col-md-4">
-            <label for="devices">设备列表</label><textarea id="devices" name="设备列表"
-                                                           rows="5" cols="33"></textarea>
+        <div class="col-md-6">
+            <div class="row">
+                <label for="devices">设备列表</label>
+            </div>
+            <div class="row">
+                <textarea id="devices" name="设备列表" rows="5" cols="33"></textarea>
+            </div>
             <div class="row">
                 <div class="col-md-6">
 
