@@ -28,10 +28,10 @@
         <div class="col-md-12">
             <ul class="nav nav-tabs">
                 <li class="nav-item">
-                    <a id="manage_nva" class="nav-link " href="#">管理</a>
+                    <a id="manage_nva" class="nav-link active" href="#">管理</a>
                 </li>
                 <li class="nav-item">
-                    <a id="command_nva" class="nav-link active" href="#">指令生成</a>
+                    <a id="command_nva" class="nav-link " href="#">指令生成</a>
                 </li>
                 <li class="nav-item">
                     <a id="check_nva" class="nav-link" href="#">核查</a>
@@ -344,9 +344,9 @@ stanard:llll
     }, false);
 
     $(function () {
-        $('#command').show();
+        $('#command').hide();
         $('#check').hide();
-        $('#manage').hide();
+        $('#manage').show();
         $('#command_nva').on('click', function () {
             $('#command').show();
             $('#check').hide();
