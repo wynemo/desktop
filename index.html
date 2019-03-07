@@ -396,31 +396,38 @@ stanard:llll
             let lineString = $('#devices').val();
             let arrayOfLines = lineString.match(/[^\r\n]+/g);
             const SSH2Promise = require('ssh2-promise');
+            const fsextra = require('fs-extra');
             let num = arrayOfLines.length;
             let cmd = $('#execute_cmd').val();
             const path1 = app.getPath('userData');
             console.log(path1);
+            let ssh_folder = path.join(path1, 'ssh');
+            fsextra.removeSync(ssh_folder);
+            fsextra.ensureDirSync(ssh_folder);
             for (let i = 0; i < num; i++) {
                 let config = get_ssh_options(arrayOfLines[i]);
                 if (config === undefined) {
                     num -= 1;
                     continue;
                 }
+                let fd = fs.openSync(path.join(ssh_folder, config.host + '.txt'), 'w');
                 let ssh = new SSH2Promise(config);
                 (async function () {
                     try {
                         var socket = await ssh.shell();
                         socket.on('data', (data) => {
                             console.log(data.toString('utf8'));
-                            // fs.writeSync(fd, data);
+                            fs.writeSync(fd, data);
                             //shell content will be available here
                         }).on('close', () => {
-                            console.log('close------')
+                            console.log('close------');
+                            fs.closeSync(fd);
                             num -= 1;
                         });
                         socket.write(cmd)
                     } catch (e) {
-                        console.log('error', e)
+                        console.log('error', e);
+                        fs.closeSync(fd);
                         num -= 1;
                     }
                 }) ();
@@ -439,9 +446,7 @@ stanard:llll
             check_status();
 
 
-            // var fd = fs.openSync(path.join(path1, 'logs.txt'), 'w');
 
-            // fs.closeSync(fd);
         });
     });
 </script>
