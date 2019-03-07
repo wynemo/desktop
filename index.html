@@ -44,16 +44,16 @@
         <div class="col-md-8">
             <label for="execute_cmd">执行指令</label><textarea id="execute_cmd" name="执行指令"
                                                        rows="5" cols="33"></textarea>
-            <select>
+            <label for="manage_type"></label><select id="manage_type">
                 <option value="ssh">ssh</option>
                 <option value="telnet">telnet</option>
             </select>
-            <button type="button" class="btn btn-success">
-                Button
+            <button type="button" class="btn btn-success" id="manage_begin">
+                开始执行
             </button>
         </div>
         <div class="col-md-4">
-            <label for="execute_cmd">设备列表</label><textarea id="devices" name="设备列表"
+            <label for="devices">设备列表</label><textarea id="devices" name="设备列表"
                                                            rows="5" cols="33"></textarea>
             <div class="row">
                 <div class="col-md-6">
@@ -371,18 +371,19 @@ stanard:llll
             $('#command_nva').removeClass('active');
             $('#manage_nva').addClass('active');
         });
-        $('#begin_check').on('click', function () {
-            return;
-            $('#begin_check').prop('disabled', true);
+        $('#manage_begin').on('click', function () {
+            $('#manage_begin').prop('disabled', true);
             var path1 = app.getPath('userData');
             console.log(path1);
             var Client = require('ssh2').Client;
+            let cmd = $('#execute_cmd').val();
 
             var conn = new Client();
             conn.on('ready', function () {
                 console.log('Client :: ready');
                 conn.shell(function (err, stream) {
                     if (err) {
+                        $('#manage_begin').prop('disabled', false);
                         console.log('shell error');
                         throw err;
                     }
@@ -391,20 +392,21 @@ stanard:llll
                         console.log('Stream :: close');
                         conn.end();
                         fs.closeSync(fd);
-                        $('#begin_check').prop('disabled', false);
+                        $('#manage_begin').prop('disabled', false);
                     }).on('data', function (data) {
                         fs.writeSync(fd, data);
                         console.log('STDOUT: ' + data);
                     }).stderr.on('data', function (data) {
                         console.log('STDERR: ' + data);
                     });
-                    stream.end('ls -l\ndf\nexit\n');
+                    stream.end(cmd);
                 });
             }).on('error', function (err) {
                 console.log(err);
+                $('#manage_begin').prop('disabled', false);
 
             }).connect({
-                host: 'online.clavier.zencoo.com',
+                host: 'online.conch.zencoo.com',
                 port: 22,
                 username: 'nemo',
                 privateKey: require('fs').readFileSync('/Users/zdb/.ssh/id_rsa')
