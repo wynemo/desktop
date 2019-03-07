@@ -403,6 +403,7 @@ stanard:llll
             for (let i = 0; i < num; i++) {
                 let config = get_ssh_options(arrayOfLines[i]);
                 if (config === undefined) {
+                    num -= 1;
                     continue;
                 }
                 let ssh = new SSH2Promise(config);
@@ -415,14 +416,28 @@ stanard:llll
                             //shell content will be available here
                         }).on('close', () => {
                             console.log('close------')
+                            num -= 1;
                         });
                         socket.write(cmd)
                     } catch (e) {
                         console.log('error', e)
+                        num -= 1;
                     }
                 }) ();
 
             }
+
+            function check_status() {
+                if (num <= 0) {
+                    $('#manage_begin').prop('disabled', false);
+                } else {
+                    setTimeout(function () {
+                        check_status();
+                    }, 3000)
+                }
+            }
+            check_status();
+
 
             // var fd = fs.openSync(path.join(path1, 'logs.txt'), 'w');
 
