@@ -58,14 +58,14 @@
             <div class="row">
                 <div class="col-md-6">
 
-                    <button type="button" class="btn btn-success">
-                        Button
+                    <button id="export_device" type="button" class="btn btn-success">
+                        导出设备
                     </button>
                 </div>
                 <div class="col-md-6">
 
-                    <button type="button" class="btn btn-success">
-                        Button
+                    <button id="import_device" type="button" class="btn btn-success">
+                        导入设备
                     </button>
                 </div>
             </div>
@@ -142,10 +142,6 @@
                 </label>
             </div>
         </div>
-            <!--<h3>-->
-                <!--核查模块-->
-            <!--</h3>-->
-        <!--</div>-->
         <div class="col-md-12">
             <div class="row">
                 <div class="col-md-8">
@@ -338,6 +334,40 @@ stanard:llll
                         return;
                     }
                     document.getElementById("command_variable").value = data;
+                });
+            }
+        });
+    }, false);
+
+    document.getElementById('export_device').addEventListener('click', function () {
+        var content = document.getElementById("devices").value;
+        dialog.showSaveDialog(function (fileName) {
+            if (fileName === undefined) {
+                console.log("No file selected");
+            } else {
+                console.log("file selected", fileName);
+                fs.writeFile(fileName, content, function (err) {
+                    if (err) {
+                        alert("An error ocurred creating the file " + err.message)
+                    }
+
+                    alert("The file has been succesfully saved");
+                });
+            }
+        });
+    }, false);
+
+    document.getElementById('import_device').addEventListener('click', function () {
+        dialog.showOpenDialog(function (fileNames) {
+            if (fileNames === undefined) {
+                console.log("No file selected");
+            } else {
+                fs.readFile(fileNames[0], 'utf-8', function (err, data) {
+                    if (err) {
+                        alert("An error ocurred reading the file :" + err.message);
+                        return;
+                    }
+                    document.getElementById("devices").value = data;
                 });
             }
         });
