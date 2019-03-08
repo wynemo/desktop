@@ -16,6 +16,7 @@
         window.module = module;
         module = undefined;
     }</script>
+    <script src="js/encryption.js"></script>
     <script src="js/jquery.min.js"></script>
     <script src="js/bootstrap.min.js"></script>
     <script src="js/scripts.js"></script>
@@ -251,6 +252,13 @@ stanard:llll
         }
     }
 
+    function writeInfo() {
+        let current_date = Date.now();
+        let num = current_date.toString(10);
+        let data = encrypt(num);
+        console.log(data);
+    }
+
     const getInfoPath = () => {
         if (!guessPackaged()) {
             return path.join(__dirname, PY_FOLDER, 'info.dat')
@@ -294,6 +302,37 @@ stanard:llll
         let info_path = getInfoPath();
         if (!fs.existsSync(info_path)) {
             refuseWork();
+        } else {
+            let data = fs.readFileSync(info_path);
+            let info = decrypt(data.toString('utf-8'));
+            let span = 3600 * 24 * 30 * 1000;
+            console.log(info);
+            let date1 = parseInt(info, 10);
+            let current_date = Date.now();
+            if (current_date <= date1 || current_date - date1 > span) {
+                refuseWork();
+            }
+
+            let url = 'http://worldtimeapi.org/api/timezone/Asia/Shanghai.json';
+            function update() {
+                $.ajax({
+                    type: 'GET',
+                    dataType: 'json',
+                    url: url,
+                    timeout: 5000,
+                    success: function (data, textStatus) {
+                        let unix_time = parseInt(data.unixtime, 10);
+                        current_date = unix_time * 1000;
+                        console.log('current:', current_date);
+                        if (current_date <= date1 || current_date - date1 > span) {
+                            refuseWork();
+                        }
+                    },
+                    fail: function (xhr, textStatus, errorThrown) {
+                    }
+                });
+            }
+            update();
         }
 
         document.getElementById('set_file_path').addEventListener('click', function () {
