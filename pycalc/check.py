@@ -1,6 +1,9 @@
+# coding=utf-8
 import os
 import re
 import sys
+
+import xlwt
 
 state_stopped = 0
 state_rule = 1
@@ -70,6 +73,7 @@ def check_result(calc, standard, result):
 def read_file(file_path, configs):
     pattern = '\<[\w-]+?\>(.+)'
     current_rule = None
+    info = []
     with open(file_path, 'r') as f:
         for line in f.readlines():
             line = line.strip()
@@ -102,6 +106,7 @@ def read_file(file_path, configs):
                                     standard = check_rule['standard']
                                     result = check_result(check_rule['calc'], standard, result)
                                 s = 'path is %s, rule is %s, keyword is %s, result is %s' % (file_path, current_rule, keyword_result, result)
+                                info.append((file_path, current_rule, keyword_result, result))
                                 if sys.platform == 'win32':
                                     try:
                                         print(s.decode('gbk').encode('utf-8'))
@@ -109,15 +114,65 @@ def read_file(file_path, configs):
                                         print(s)
                                 else:
                                     print(s)
+        return info
+
+
+def create_csv():
+    book = xlwt.Workbook()
+    sheet = book.add_sheet('Sheet1')
+    return book, sheet
+
+
+def try_to_get_unicode(s):
+    if sys.platform == 'win32':
+        try:
+            return s.decode('gbk')
+        except:
+            return s
+    else:
+        return s
+
+
+def write_sheet(info, row):
+    for file_path1, current_rule, keyword_result, result in info:
+        file_path1 = try_to_get_unicode(file_path1)
+        current_rule = try_to_get_unicode(current_rule)
+        keyword_result = try_to_get_unicode(keyword_result)
+        result = try_to_get_unicode(result)
+        col = 0
+        sheet.write(row, col, file_path1)
+        col += 1
+        sheet.write(row, col, current_rule)
+        col += 1
+        sheet.write(row, col, keyword_result)
+        col += 1
+        sheet.write(row, col, result)
+        row += 1
 
 
 if __name__ == '__main__':
     rule_path = sys.argv[1]
     configs = read_config(rule_path)
     file_path = sys.argv[2]
+    book, sheet = create_csv()
+    row = 0
+    sheet.write(row, 0, u'路径')
+    sheet.write(row, 1, u'命令')
+    sheet.write(row, 2, u'规则')
+    sheet.write(row, 3, u'检查结果')
+    row = 1
     if os.path.isfile(file_path):
-        read_file(file_path, configs)
+        info = read_file(file_path, configs)
+        if info:
+            write_sheet(info, row)
+            row += 1
     elif os.path.isdir(file_path):
         for each in os.listdir(file_path):
             sub_path = os.path.join(file_path, each)
-            read_file(sub_path, configs)
+            info = read_file(sub_path, configs)
+            if info:
+                write_sheet(info, row)
+                row += 1
+    path = './results.xls'
+    print(os.path.abspath(path))
+    book.save(path)
