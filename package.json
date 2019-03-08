@@ -1,21 +1,15 @@
 {
-  "name": "electron-quick-start",
+  "name": "managment_software",
   "version": "1.0.0",
-  "description": "A minimal Electron application",
+  "description": "managment software",
   "main": "main.js",
   "scripts": {
     "start": "electron ."
   },
-  "repository": "https://github.com/electron/electron-quick-start",
-  "keywords": [
-    "Electron",
-    "quick",
-    "start",
-    "tutorial",
-    "demo"
-  ],
-  "author": "GitHub",
-  "license": "CC0-1.0",
+  "repository": "https://github.com/wynemo/desktop",
+  "keywords": [],
+  "author": "wynemo@126.com",
+  "license": "closed",
   "dependencies": {
     "ssh2-promise": "0.1.3",
     "telnet-client": "0.16.3",
