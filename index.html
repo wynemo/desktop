@@ -251,146 +251,16 @@ stanard:llll
         }
     }
 
-    document.getElementById('set_file_path').addEventListener('click', function () {
-        dialog.showOpenDialog({ properties: ['openFile', 'openDirectory'] }, function (fileName) {
-            if (fileName === undefined) {
-                console.log("No file selected");
-            } else {
-                console.log("file selected", fileName);
-                $('#current_path').val(fileName);
-            }
-        });
-    }, false);
+    const getInfoPath = () => {
+        if (!guessPackaged()) {
+            return path.join(__dirname, PY_FOLDER, 'info.dat')
+        }
+        return path.join(__dirname, '..', '..', PY_DIST_FOLDER, 'info.dat')
+    }
 
-    document.getElementById('begin_check').addEventListener('click', function () {
-        var content = document.getElementById("check_rules").value;
-        let path1 = app.getPath('userData');
-        let rules_path = path.join(path1, 'rules.txt');
-        console.log(rules_path);
-        fs.writeFile(rules_path, content, function (err) {
-            if (err) {
-                alert("An error ocurred creating the file " + err.message)
-                return;
-            }
-            let current_path = $('#current_path').val();
-            console.log('current_path' ,current_path);
-            if (current_path.length === 0 ) {
-                alert('请先选择要检查的文件');
-                return;
-            }
-            createPyProc(rules_path, current_path);
-        });
-    }, false);
-
-    document.getElementById('command_begin').addEventListener('click', function () {
-        var content = '`' + document.getElementById("command_text").value + '`';
-        var variable = document.getElementById("command_variable").value;
-        eval(variable);
-        var o = eval(content);
-        document.getElementById("command_text").value = o;
-    }, false);
-
-    document.getElementById('export_command_template').addEventListener('click', function () {
-        var content = document.getElementById("command_text").value;
-        dialog.showSaveDialog(function (fileName) {
-            if (fileName === undefined) {
-                console.log("No file selected");
-            } else {
-                console.log("file selected", fileName);
-                fs.writeFile(fileName, content, function (err) {
-                    if (err) {
-                        alert("An error ocurred creating the file " + err.message)
-                    }
-
-                    alert("The file has been succesfully saved");
-                });
-            }
-        });
-    }, false);
-
-    document.getElementById('import_command_template').addEventListener('click', function () {
-        dialog.showOpenDialog(function (fileNames) {
-            if (fileNames === undefined) {
-                console.log("No file selected");
-            } else {
-                fs.readFile(fileNames[0], 'utf-8', function (err, data) {
-                    if (err) {
-                        alert("An error ocurred reading the file :" + err.message);
-                        return;
-                    }
-                    document.getElementById("command_text").value = data;
-                });
-            }
-        });
-    }, false);
-
-    document.getElementById('export_command_variable').addEventListener('click', function () {
-        var content = document.getElementById("command_variable").value;
-        dialog.showSaveDialog(function (fileName) {
-            if (fileName === undefined) {
-                console.log("No file selected");
-            } else {
-                console.log("file selected", fileName);
-                fs.writeFile(fileName, content, function (err) {
-                    if (err) {
-                        alert("An error ocurred creating the file " + err.message)
-                    }
-
-                    alert("The file has been succesfully saved");
-                });
-            }
-        });
-    }, false);
-
-    document.getElementById('import_command_variable').addEventListener('click', function () {
-        dialog.showOpenDialog(function (fileNames) {
-            if (fileNames === undefined) {
-                console.log("No file selected");
-            } else {
-                fs.readFile(fileNames[0], 'utf-8', function (err, data) {
-                    if (err) {
-                        alert("An error ocurred reading the file :" + err.message);
-                        return;
-                    }
-                    document.getElementById("command_variable").value = data;
-                });
-            }
-        });
-    }, false);
-
-    document.getElementById('export_device').addEventListener('click', function () {
-        var content = document.getElementById("devices").value;
-        dialog.showSaveDialog(function (fileName) {
-            if (fileName === undefined) {
-                console.log("No file selected");
-            } else {
-                console.log("file selected", fileName);
-                fs.writeFile(fileName, content, function (err) {
-                    if (err) {
-                        alert("An error ocurred creating the file " + err.message)
-                    }
-
-                    alert("The file has been succesfully saved");
-                });
-            }
-        });
-    }, false);
-
-    document.getElementById('import_device').addEventListener('click', function () {
-        dialog.showOpenDialog(function (fileNames) {
-            if (fileNames === undefined) {
-                console.log("No file selected");
-            } else {
-                fs.readFile(fileNames[0], 'utf-8', function (err, data) {
-                    if (err) {
-                        alert("An error ocurred reading the file :" + err.message);
-                        return;
-                    }
-                    document.getElementById("devices").value = data;
-                });
-            }
-        });
-    }, false);
+    function refuseWork() {
+        throw Error('refuse work')
+    }
 
     $(function () {
         $('#command').hide();
@@ -420,6 +290,153 @@ stanard:llll
             $('#command_nva').removeClass('active');
             $('#manage_nva').addClass('active');
         });
+
+        let info_path = getInfoPath();
+        if (!fs.existsSync(info_path)) {
+            refuseWork();
+        }
+
+        document.getElementById('set_file_path').addEventListener('click', function () {
+            dialog.showOpenDialog({ properties: ['openFile', 'openDirectory'] }, function (fileName) {
+                if (fileName === undefined) {
+                    console.log("No file selected");
+                } else {
+                    console.log("file selected", fileName);
+                    $('#current_path').val(fileName);
+                }
+            });
+        }, false);
+
+        document.getElementById('begin_check').addEventListener('click', function () {
+            var content = document.getElementById("check_rules").value;
+            let path1 = app.getPath('userData');
+            let rules_path = path.join(path1, 'rules.txt');
+            console.log(rules_path);
+            fs.writeFile(rules_path, content, function (err) {
+                if (err) {
+                    alert("An error ocurred creating the file " + err.message)
+                    return;
+                }
+                let current_path = $('#current_path').val();
+                console.log('current_path' ,current_path);
+                if (current_path.length === 0 ) {
+                    alert('请先选择要检查的文件');
+                    return;
+                }
+                createPyProc(rules_path, current_path);
+            });
+        }, false);
+
+        document.getElementById('command_begin').addEventListener('click', function () {
+            var content = '`' + document.getElementById("command_text").value + '`';
+            var variable = document.getElementById("command_variable").value;
+            eval(variable);
+            var o = eval(content);
+            document.getElementById("command_text").value = o;
+        }, false);
+
+        document.getElementById('export_command_template').addEventListener('click', function () {
+            var content = document.getElementById("command_text").value;
+            dialog.showSaveDialog(function (fileName) {
+                if (fileName === undefined) {
+                    console.log("No file selected");
+                } else {
+                    console.log("file selected", fileName);
+                    fs.writeFile(fileName, content, function (err) {
+                        if (err) {
+                            alert("An error ocurred creating the file " + err.message)
+                        }
+
+                        alert("The file has been succesfully saved");
+                    });
+                }
+            });
+        }, false);
+
+        document.getElementById('import_command_template').addEventListener('click', function () {
+            dialog.showOpenDialog(function (fileNames) {
+                if (fileNames === undefined) {
+                    console.log("No file selected");
+                } else {
+                    fs.readFile(fileNames[0], 'utf-8', function (err, data) {
+                        if (err) {
+                            alert("An error ocurred reading the file :" + err.message);
+                            return;
+                        }
+                        document.getElementById("command_text").value = data;
+                    });
+                }
+            });
+        }, false);
+
+        document.getElementById('export_command_variable').addEventListener('click', function () {
+            var content = document.getElementById("command_variable").value;
+            dialog.showSaveDialog(function (fileName) {
+                if (fileName === undefined) {
+                    console.log("No file selected");
+                } else {
+                    console.log("file selected", fileName);
+                    fs.writeFile(fileName, content, function (err) {
+                        if (err) {
+                            alert("An error ocurred creating the file " + err.message)
+                        }
+
+                        alert("The file has been succesfully saved");
+                    });
+                }
+            });
+        }, false);
+
+        document.getElementById('import_command_variable').addEventListener('click', function () {
+            dialog.showOpenDialog(function (fileNames) {
+                if (fileNames === undefined) {
+                    console.log("No file selected");
+                } else {
+                    fs.readFile(fileNames[0], 'utf-8', function (err, data) {
+                        if (err) {
+                            alert("An error ocurred reading the file :" + err.message);
+                            return;
+                        }
+                        document.getElementById("command_variable").value = data;
+                    });
+                }
+            });
+        }, false);
+
+        document.getElementById('export_device').addEventListener('click', function () {
+            var content = document.getElementById("devices").value;
+            dialog.showSaveDialog(function (fileName) {
+                if (fileName === undefined) {
+                    console.log("No file selected");
+                } else {
+                    console.log("file selected", fileName);
+                    fs.writeFile(fileName, content, function (err) {
+                        if (err) {
+                            alert("An error ocurred creating the file " + err.message)
+                        }
+
+                        alert("The file has been succesfully saved");
+                    });
+                }
+            });
+        }, false);
+
+        document.getElementById('import_device').addEventListener('click', function () {
+            dialog.showOpenDialog(function (fileNames) {
+                if (fileNames === undefined) {
+                    console.log("No file selected");
+                } else {
+                    fs.readFile(fileNames[0], 'utf-8', function (err, data) {
+                        if (err) {
+                            alert("An error ocurred reading the file :" + err.message);
+                            return;
+                        }
+                        document.getElementById("devices").value = data;
+                    });
+                }
+            });
+        }, false);
+
         function get_ssh_options(line) {
             let pos1 = line.indexOf(":")
             if (pos1 === -1) {
