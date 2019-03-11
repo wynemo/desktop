@@ -92,19 +92,21 @@ def read_file(file_path, configs):
                     check_rules = configs[current_rule]
                     for check_rule in check_rules:
                         keyword = check_rule['keyword']
-                        o = re.match(keyword, line)
+                        o = re.search(keyword, line)
                         if o is not None:
                             keyword_result = o.group()
                             splitword_pattern = check_rule['splitword']
                             o = re.search(splitword_pattern, line)
                             if o is not None:
                                 splitword = o.group()
-                                pos = line.find(splitword)
-                                result = line[pos + len(splitword):]
+                                pos = keyword_result.find(splitword)
+                                result = keyword_result[pos + len(splitword):]
                                 result = result.strip()
-                                if check_rule['standard']:
-                                    standard = check_rule['standard']
-                                    result = check_result(check_rule['calc'], standard, result)
+                            else:
+                                result = keyword_result.strip()
+                            if check_rule['standard']:
+                                standard = check_rule['standard']
+                                result = check_result(check_rule['calc'], standard, result)
                                 s = 'path is %s, rule is %s, keyword is %s, result is %s' % (file_path, current_rule, keyword_result, result)
                                 info.append((file_path, current_rule, keyword_result, result))
                                 if sys.platform == 'win32':
