@@ -3,6 +3,7 @@ os: windows
 
 node_js:
   - "node"
+  - "7"
 
 before_script:
   - npm install -g electron-packager
