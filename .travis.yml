@@ -3,11 +3,13 @@ os: windows
 
 node_js:
   - "node"
-  - "7"
 
 before_script:
   - npm install -g electron-packager
   - npm install -g asar
 
 script:
-   electron-packager . --overwrite --asar --ignore=.git --ignore=build
+   - electron-packager . --overwrite --asar --ignore=.git --ignore=build
+   - cp -r dist managment_software-win32-x64/
+   - cp -r 数据 managment_software-win32-x64/
+   - zip -r managment_software.zip managment_software-win32-x64
