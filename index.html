@@ -85,6 +85,14 @@
                     </button>
                 </div>
             </div>
+            <br>
+            <div class="row">
+                <label for="devices">执行结果</label>
+            </div>
+            <div class="row">
+                <textarea id="remote_results" disabled name="执行结果" rows="5" cols="33" style="width: 90%"></textarea>
+                <div id="remote_error"></div>
+            </div>
         </div>
     </div>
 
@@ -513,6 +521,9 @@ stanard:llll
                 }
             }
             $('#manage_begin').on('click', function () {
+                document.getElementById("remote_results").value = '';
+                document.getElementById("remote_error").innerHTML = '';
+
                 $('#manage_begin').prop('disabled', true);
 
                 let lineString = $('#devices').val();
@@ -542,6 +553,7 @@ stanard:llll
                             socket.on('data', (data) => {
                                 console.log(data.toString('utf8'));
                                 fs.writeSync(fd, data);
+                                document.getElementById("remote_results").value += data.toString();
                                 //shell content will be available here
                             }).on('close', () => {
                                 console.log('close------');
@@ -552,6 +564,7 @@ stanard:llll
                         } catch (e) {
                             console.log('error', e);
                             fs.writeSync(fd, e.toString());
+                            document.getElementById("remote_error").innerHTML += '<span style="color: red">' + e.toString() + '</span>';
                             fs.closeSync(fd);
                             num -= 1;
                         }
