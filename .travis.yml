@@ -13,3 +13,11 @@ script:
    - cp -r dist managment_software-win32-x64/
    - cp -r 数据 managment_software-win32-x64/
    - zip -r managment_software.zip managment_software-win32-x64
+
+deploy:
+  provider: releases
+  api_key: '$GITHUB_API_KEY'
+  file: 'managment_software.zip'
+  skip_cleanup: true
+  on:
+    tags/
