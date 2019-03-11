@@ -9,5 +9,5 @@ before_script:
   - npm install -g electron-packager
   - npm install -g asar
 
-script
+script:
    electron-packager . --overwrite --asar --ignore=.git --ignore=build

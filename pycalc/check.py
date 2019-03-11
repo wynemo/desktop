@@ -78,7 +78,7 @@ def read_file(file_path, configs):
     pattern = '\<[\w-]+?\>(.+)'
     current_rule = None
     info = []
-    with open(file_path, 'r') as f:
+    with open(file_path, 'rb') as f:
         s = f.read()
         s = re.sub('\s*?\<[\w-]+?\>\r\n', replace_carriage, s)
 
