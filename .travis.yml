@@ -1,0 +1,13 @@
+language: node_js
+os: windows
+
+node_js:
+  - "node"
+  - "7"
+
+before_script:
+  - npm install -g electron-packager
+  - npm install -g asar
+
+script
+   electron-packager . --overwrite --asar --ignore=.git --ignore=build
