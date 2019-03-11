@@ -176,5 +176,12 @@ if __name__ == '__main__':
                 write_sheet(info, row)
                 row += 1
     path = './results.xls'
-    print(os.path.abspath(path))
+    abs_path = os.path.abspath(path)
+    if sys.platform == 'win32':
+        try:
+            print(abs_path.decode('gbk').encode('utf-8'))
+        except:
+            print(abs_path)
+    else:
+        print(abs_path)
     book.save(path)
