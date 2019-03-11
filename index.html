@@ -533,6 +533,7 @@ stanard:llll
                         num -= 1;
                         continue;
                     }
+                    console.log(config);
                     let fd = fs.openSync(path.join(ssh_folder, config.host + '.txt'), 'w');
                     let ssh = new SSH2Promise(config);
                     (async function () {
@@ -550,6 +551,7 @@ stanard:llll
                             socket.write(cmd)
                         } catch (e) {
                             console.log('error', e);
+                            fs.writeSync(fd, e.toString());
                             fs.closeSync(fd);
                             num -= 1;
                         }
