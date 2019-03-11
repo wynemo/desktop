@@ -1,9 +1,26 @@
 // Modules to control application life and create native browser window
-const {app, BrowserWindow} = require('electron')
+const {app, BrowserWindow} = require('electron');
+const fs = require('fs');
+const path = require('path');
 
 // Keep a global reference of the window object, if you don't, the window will
 // be closed automatically when the JavaScript object is garbage collected.
 let mainWindow
+
+const PY_DIST_FOLDER = 'dist'
+const PY_FOLDER = 'pycalc'
+
+const guessPackaged = () => {
+    const fullPath = path.join(__dirname, 'dist')
+    return require('fs').existsSync(fullPath)
+}
+
+const getInfoPath = () => {
+    if (!guessPackaged()) {
+        return path.join(__dirname, PY_FOLDER, 'config.json')
+    }
+    return path.join(__dirname, '..', '..', PY_DIST_FOLDER, 'config.json')
+}
 
 function createWindow () {
   // Create the browser window.
@@ -14,7 +31,16 @@ function createWindow () {
       nodeIntegration: true
     }
   })
-   //mainWindow.webContents.openDevTools()
+
+    let json_path = getInfoPath();
+    console.log(json_path);
+    if (fs.existsSync(json_path)) {
+        let content = fs.readFileSync(json_path);
+        let o = JSON.parse(content.toString('utf-8'))
+        if (o.console) {
+            mainWindow.webContents.openDevTools()
+        }
+    }
 
   // and load the index.html of the app.
   mainWindow.loadFile('index.html')

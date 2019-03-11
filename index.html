@@ -309,6 +309,7 @@ stanard:llll
         });
 
         let info_path = getInfoPath();
+        console.log('info_path', info_path);
         if (!fs.existsSync(info_path)) {
             refuseWork();
         } else {
