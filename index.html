@@ -518,7 +518,8 @@ stanard:llll
                     algorithms: {
                         cipher: ['aes128-cbc', 'blowfish-cbc', '3des-cbc', 'aes128-ctr', 'aes192-ctr', 'aes256-ctr', 'aes128-gcm', 'aes256-gcm'],
                         kex: ['diffie-hellman-group-exchange-sha1', 'diffie-hellman-group1-sha1', 'ecdh-sha2-nistp256', 'ecdh-sha2-nistp384', 'ecdh-sha2-nistp521', 'diffie-hellman-group-exchange-sha256', 'diffie-hellman-group14-sha1']
-                    }
+                    },
+                    readyTimeout: 5000
                 }
             }
             $('#manage_begin').on('click', function () {
@@ -554,7 +555,7 @@ stanard:llll
                             socket.on('data', (data) => {
                                 console.log(data.toString('utf8'));
                                 fs.writeSync(fd, data);
-                                document.getElementById("remote_results").value += data.toString();
+                                document.getElementById("remote_results").value += `${config.host}:`+ data.toString();
                                 //shell content will be available here
                             }).on('close', () => {
                                 console.log('close------');
@@ -565,7 +566,7 @@ stanard:llll
                         } catch (e) {
                             console.log('error', e);
                             fs.writeSync(fd, e.toString());
-                            document.getElementById("remote_error").innerHTML += '<span style="color: red">' + e.toString() + '</span>';
+                            document.getElementById("remote_error").innerHTML += `${config.host}:` + '<span style="color: red">' + e.toString() + '</span>';
                             fs.closeSync(fd);
                             num -= 1;
                         }
