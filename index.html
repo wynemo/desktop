@@ -505,7 +505,11 @@ stanard:llll
                 return {
                     host: host,
                     username: user,
-                    password: password
+                    password: password,
+                    algorithms: {
+                        cipher: ['aes128-cbc', 'blowfish-cbc', '3des-cbc', 'aes128-ctr', 'aes192-ctr', 'aes256-ctr', 'aes128-gcm', 'aes256-gcm'],
+                        kex: ['diffie-hellman-group-exchange-sha1', 'diffie-hellman-group1-sha1', 'ecdh-sha2-nistp256', 'ecdh-sha2-nistp384', 'ecdh-sha2-nistp521', 'diffie-hellman-group-exchange-sha256', 'diffie-hellman-group14-sha1']
+                    }
                 }
             }
             $('#manage_begin').on('click', function () {
@@ -517,7 +521,7 @@ stanard:llll
                 const fsextra = require('fs-extra');
                 let num = arrayOfLines.length;
                 let cmd = $('#execute_cmd').val();
-                cmd += '\nexit\n';
+                cmd += '\nquit\n';
                 const path1 = app.getPath('userData');
                 console.log(path1);
                 let ssh_folder = path.join(path1, 'ssh');
