@@ -70,12 +70,19 @@ def check_result(calc, standard, result):
     return eval(s)
 
 
+def replace_carriage(match):
+    return match.group().strip()
+
+
 def read_file(file_path, configs):
     pattern = '\<[\w-]+?\>(.+)'
     current_rule = None
     info = []
     with open(file_path, 'r') as f:
-        for line in f.readlines():
+        s = f.read()
+        s = re.sub('\s*?\<[\w-]+?\>\r\n', replace_carriage, s)
+
+        for line in s.splitlines():
             line = line.strip()
             if not line:
                 continue
