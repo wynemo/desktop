@@ -12,6 +12,7 @@ before_script:
 script:
    - electron-packager . --overwrite --asar --ignore=.git --ignore=build
    - cp -r dist managment_software-win32-x64/
+   - cp pycalc/info.dat managment_software-win32-x64/dist/
    - 7z a -tzip managment_software.zip -r managment_software-win32-x64
 
 deploy:
