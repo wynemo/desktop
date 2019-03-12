@@ -10,9 +10,9 @@ python:
 before_script:
   - npm install -g electron-packager
   - npm install -g asar
-  - choco install miniconda3
 
 script:
+  - choco install miniconda3
   - /c/tools/miniconda3/conda create -n py2k python=2.7 xlwt pyintaller
   - /c/tools/miniconda3/envs/py2k/bin/pyinstaller --onefile pycalc/check.py
   - electron-packager . --overwrite --asar --ignore=.git --ignore=build
