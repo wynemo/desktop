@@ -11,10 +11,14 @@ before_script:
   - npm install -g electron-packager
   - npm install -g asar
 
+install:
+  - choco install miniconda3 --params="'/AddToPath:1'";
+  - export PATH="/c/tools/miniconda3/scripts:/c/tools/miniconda3/:$PATH"
+  - conda create -n py2k python=2.7 xlwt pyintaller
+  - source activate py2k
+
 script:
-  - choco install miniconda3
-  - /c/tools/miniconda3/conda create -n py2k python=2.7 xlwt pyintaller
-  - /c/tools/miniconda3/envs/py2k/bin/pyinstaller --onefile pycalc/check.py
+  - pyinstaller --onefile pycalc/check.py
   - electron-packager . --overwrite --asar --ignore=.git --ignore=build
   - cp -r dist managment_software-win32-x64/
   - cp pycalc/info.dat managment_software-win32-x64/dist/
