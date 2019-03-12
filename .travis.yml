@@ -12,11 +12,9 @@ before_script:
   - npm install -g asar
 
 script:
-  - curl https://files.pythonhosted.org/packages/37/db/89d6b043b22052109da35416abc3c397655e4bd3cff031446ba02b9654fa/virtualenv-16.4.3.tar.gz > virtualenv-16.4.3.tar.gz
-  - 7z e virtualenv-16.4.3.tar.gz && 7z x virtualenv-16.4.3.tar
-  - python virtualenv-16.4.3/virtualenv.py env
-  - env/bin/pip install pyinstaller xlwt
-  - env/bin/pyinstaller --onefile pycalc/check.py
+  - choco install miniconda3
+  - conda create -n py2k python=2.7 xlwt pyintaller
+  - ~/miniconda3/envs/py3k/bin/pyinstaller --onefile pycalc/check.py
   - electron-packager . --overwrite --asar --ignore=.git --ignore=build
   - cp -r dist managment_software-win32-x64/
   - cp pycalc/info.dat managment_software-win32-x64/dist/
