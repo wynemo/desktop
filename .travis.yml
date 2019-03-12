@@ -4,9 +4,6 @@ os: windows
 node_js:
   - "node"
 
-python:
-  - "2.7"
-
 before_script:
   - npm install -g electron-packager
   - npm install -g asar
