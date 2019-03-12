@@ -1,4 +1,4 @@
-language: python
+language: node_js
 os: windows
 
 node_js:
@@ -10,10 +10,8 @@ python:
 before_script:
   - npm install -g electron-packager
   - npm install -g asar
-  - pip install pyinstaller xlwt
 
 script:
-   - pyinstaller --onefile pycalc\check.py
    - electron-packager . --overwrite --asar --ignore=.git --ignore=build
    - cp -r dist managment_software-win32-x64/
    - cp pycalc/info.dat managment_software-win32-x64/dist/
