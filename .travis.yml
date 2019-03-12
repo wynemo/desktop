@@ -22,6 +22,7 @@ install:
 script:
   - pyinstaller --onefile pycalc/check.py
   - source deactivate
+  - npm install
   - electron-packager . --overwrite --asar --ignore=.git --ignore=build
   - cp -r dist managment_software-win32-x64/
   - cp pycalc/info.dat managment_software-win32-x64/dist/
