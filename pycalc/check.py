@@ -174,14 +174,14 @@ if __name__ == '__main__':
         info = read_file(file_path, configs)
         if info:
             write_sheet(info, row)
-            row += 1
+            row += len(info)
     elif os.path.isdir(file_path):
         for each in os.listdir(file_path):
             sub_path = os.path.join(file_path, each)
             info = read_file(sub_path, configs)
             if info:
                 write_sheet(info, row)
-                row += 1
+                row += len(info)
     path = './results.xls'
     abs_path = os.path.abspath(path)
     if sys.platform == 'win32':
