@@ -598,69 +598,154 @@ stanard:llll
                     readyTimeout: 5000
                 }
             }
+
+            function get_telnet_options(line) {
+                let pos1 = line.indexOf(":")
+                if (pos1 === -1) {
+                    return undefined;
+                }
+                let user = line.substr(0, pos1);
+                let pos2 = line.indexOf('@')
+                if (pos2 === -1) {
+                    return undefined;
+                }
+                let password = line.substr(pos1 + 1, pos2 - pos1 - 1)
+                let host = line.substr(pos2 + 1)
+                return {
+                    timeout: 5000,
+                    execTimeout: 2000,
+                    sendTimeout: 2000,
+                    host: host,
+                    username: user,
+                    password: password,
+                    shellPrompt: /(:~[^$]*\$)|(\w+>)\s*$/
+                }
+            }
+
             $('#manage_begin').on('click', function () {
+
+                let lineString = $('#devices').val().trim();
+                if (lineString.length === 0) {
+                    alert('请添加设备')
+                    return
+                }
+
                 document.getElementById("remote_results").value = '';
                 document.getElementById("remote_error").innerHTML = '';
 
                 $('#manage_begin').prop('disabled', true);
 
-                let lineString = $('#devices').val();
+                let manageType = $('#manage_type').val();
                 let arrayOfLines = lineString.match(/[^\r\n]+/g);
                 const SSH2Promise = require('ssh2-promise');
+                const Telnet = require('telnet-client')
                 const fsextra = require('fs-extra');
                 let num = arrayOfLines.length;
                 let cmd = $('#execute_cmd').val();
-                cmd += '\nquit\n';
                 const path1 = app.getPath('userData');
                 console.log(path1);
-                let ssh_folder = path.join(path1, 'ssh');
-                fsextra.removeSync(ssh_folder);
-                fsextra.ensureDirSync(ssh_folder);
-                for (let i = 0; i < num; i++) {
-                    let config = get_ssh_options(arrayOfLines[i]);
-                    if (config === undefined) {
-                        num -= 1;
-                        continue;
-                    }
-                    console.log(config);
-                    let fd = fs.openSync(path.join(ssh_folder, config.host + '.txt'), 'w');
-                    let ssh = new SSH2Promise(config);
-                    (async function () {
-                        try {
-                            var socket = await ssh.shell();
-                            socket.on('data', (data) => {
-                                console.log(data.toString('utf8'));
-                                fs.writeSync(fd, data);
-                                document.getElementById("remote_results").value += `${config.host}:`+ data.toString();
-                                //shell content will be available here
-                            }).on('close', () => {
-                                console.log('close------');
+                if (manageType === 'ssh') {
+                    cmd += '\nquit\n';
+                    let ssh_folder = path.join(path1, 'ssh');
+                    fsextra.removeSync(ssh_folder);
+                    fsextra.ensureDirSync(ssh_folder);
+                    for (let i = 0; i < num; i++) {
+                        let config = get_ssh_options(arrayOfLines[i]);
+                        if (config === undefined) {
+                            num -= 1;
+                            continue;
+                        }
+                        console.log(config);
+                        let fd = fs.openSync(path.join(ssh_folder, config.host + '.txt'), 'w');
+                        let ssh = new SSH2Promise(config);
+                        (async function () {
+                            try {
+                                var socket = await ssh.shell();
+                                socket.on('data', (data) => {
+                                    console.log(data.toString('utf8'));
+                                    fs.writeSync(fd, data);
+                                    document.getElementById("remote_results").value += `${config.host}:`+ data.toString();
+                                    //shell content will be available here
+                                }).on('close', () => {
+                                    console.log('close------');
+                                    fs.closeSync(fd);
+                                    num -= 1;
+                                });
+                                socket.write(cmd)
+                            } catch (e) {
+                                console.log('error', e);
+                                fs.writeSync(fd, e.toString());
+                                document.getElementById("remote_error").innerHTML += `${config.host}:` + '<span style="color: red">' + e.toString() + '</span>';
                                 fs.closeSync(fd);
                                 num -= 1;
-                            });
-                            socket.write(cmd)
-                        } catch (e) {
-                            console.log('error', e);
-                            fs.writeSync(fd, e.toString());
-                            document.getElementById("remote_error").innerHTML += `${config.host}:` + '<span style="color: red">' + e.toString() + '</span>';
-                            fs.closeSync(fd);
-                            num -= 1;
-                        }
-                    }) ();
+                            }
+                        }) ();
 
-                }
-
-                function check_status() {
-                    if (num <= 0) {
-                        $('#manage_begin').prop('disabled', false);
-                        $('#current_path').val(ssh_folder);
-                    } else {
-                        setTimeout(function () {
-                            check_status();
-                        }, 3000)
                     }
+
+                    function check_status() {
+                        if (num <= 0) {
+                            $('#manage_begin').prop('disabled', false);
+                            $('#current_path').val(ssh_folder);
+                        } else {
+                            setTimeout(function () {
+                                check_status();
+                            }, 3000)
+                        }
+                    }
+                    check_status();
+
+                } else if (manageType === 'telnet') {
+                    let telnetFolder = path.join(path1, 'telnet');
+                    fsextra.removeSync(telnetFolder);
+                    fsextra.ensureDirSync(telnetFolder);
+                    for (let i = 0; i < num; i++) {
+                        let config = get_telnet_options(arrayOfLines[i]);
+                        if (config === undefined) {
+                            num -= 1;
+                            continue;
+                        }
+                        console.log(config);
+                        let fd = fs.openSync(path.join(telnetFolder, config.host + '.txt'), 'w');
+                        (async function () {
+                            let connection = new Telnet()
+                            try {
+                                await connection.connect(config)
+                                let cmds = cmd.match(/[^\r\n]+/g);
+                                for (let j = 0; j < cmds.length; j++) {
+                                    let singleCmd = cmds[j]
+                                    let res = await connection.exec(singleCmd)
+                                    console.log('async result:', res)
+                                    fs.writeSync(fd, `<hhhhhhtttttt> ${singleCmd}\n`)
+                                    fs.writeSync(fd, res);
+                                    document.getElementById("remote_results").value += `${config.host}: ${singleCmd}\n`+ res.toString();
+                                }
+                                num -= 1;
+                                connection.destroy()
+                                fs.closeSync(fd);
+                            } catch (e) {
+                                num -= 1;
+                                connection.destroy()
+                                console.log(`error ${e}`)
+                                fs.writeSync(fd, e.toString());
+                                fs.closeSync(fd);
+                                document.getElementById("remote_error").innerHTML += `${config.host}:` + '<span style="color: red">' + e.toString() + '</span>';
+                            }
+                        })()
+                    }
+                    function check_status1() {
+                        if (num <= 0) {
+                            $('#manage_begin').prop('disabled', false);
+                            $('#current_path').val(telnetFolder);
+                        } else {
+                            setTimeout(function () {
+                                check_status1();
+                            }, 3000)
+                        }
+                    }
+                    check_status1();
+
                 }
-                check_status();
 
 
 
