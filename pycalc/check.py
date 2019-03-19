@@ -78,6 +78,7 @@ def read_file(file_path, configs):
     pattern = '\<[\w-]+?\>(.+)'
     current_rule = None
     info = []
+    empty_checks = {}
     with open(file_path, 'rb') as f:
         s = f.read()
         s = re.sub('\s*?\<[\w-]+?\>\r\n', replace_carriage, s)
@@ -117,7 +118,23 @@ def read_file(file_path, configs):
                                 s = 'path is %s, rule is %s, keyword is %s, result is %s' % (file_path, current_rule, keyword_result, result)
                                 info.append((file_path, current_rule, keyword_result, result))
                                 print_crossplatform(s)
+                            else:
+                                if current_rule not in empty_checks:
+                                    empty_checks[current_rule] = EmptyCheck(current_rule, result)
+                                else:
+                                    empty_checks[current_rule].num += 1
+        for key, item in empty_checks.iteritems():
+            s = 'path is %s, rule is %s, keyword is %s, result is %s' % (file_path, key, item.result, item.num)
+            print_crossplatform(s)
+            info.append((file_path, key, item.result, item.num))
         return info
+
+
+class EmptyCheck(object):
+    def __init__(self, name, result):
+        self.num = 1
+        self.name = name
+        self.result = result
 
 
 def print_crossplatform(s):

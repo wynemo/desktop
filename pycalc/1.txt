@@ -6,10 +6,10 @@ calc:==
 standard:V600R007SPH105
 
 rule:display version2
-keyword:Patch version : V600R007SPH105
-splitword::
-calc:==
-standard:V600R007SPH1051
+keyword:V600R007SPH105
+splitword:
+calc:
+standard:
 
 keyword:yyy
 splitword:,
