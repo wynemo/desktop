@@ -39,9 +39,6 @@ def read_config(path):
                     current_name = line.replace(rule_prefix, '', 1)
                     configs[current_name] = []
                     state = state_rule
-                else:
-                    #print('ignore rule line', line)
-                    pass
             elif line.startswith(keyword_prefix) or line.startswith(splitword_prefix) or line.startswith(
                     calc_prefix) or line.startswith(standard_prefix):
                 if state in (state_rule, state_rule_stopped):
@@ -52,12 +49,6 @@ def read_config(path):
                         state = state_rule_stopped
                         configs[current_name].append(current_config)
                         current_config = {}
-                else:
-                    #print('ignore config line', line)
-                    pass
-            else:
-                #print('ignore line', line)
-                pass
     return configs
 
 
@@ -115,26 +106,23 @@ def read_file(file_path, configs):
                             if check_rule['standard']:
                                 standard = check_rule['standard']
                                 result = check_result(check_rule['calc'], standard, result)
-                                s = 'path is %s, rule is %s, keyword is %s, result is %s' % (file_path, current_rule, keyword_result, result)
+                                s = 'path is %s, rule is %s, keyword is %s, result is %s' % (
+                                    file_path, current_rule, keyword_result, result)
                                 info.append((file_path, current_rule, keyword_result, result))
                                 print_crossplatform(s)
-                            else:
-                                if current_rule not in empty_checks:
-                                    empty_checks[current_rule] = EmptyCheck(current_rule, result)
-                                else:
-                                    empty_checks[current_rule].num += 1
+            for each in configs['']:
+                keyword = each['keyword']
+                o = re.search(keyword, line)
+                if o is not None:
+                    if keyword not in empty_checks:
+                        empty_checks[keyword] = 1
+                    else:
+                        empty_checks[keyword] += 1
         for key, item in empty_checks.iteritems():
-            s = 'path is %s, rule is %s, keyword is %s, result is %s' % (file_path, key, item.result, item.num)
+            s = 'path is %s, rule is %s, keyword is %s, result is %s' % (file_path, '', key, item)
             print_crossplatform(s)
-            info.append((file_path, key, item.result, item.num))
+            info.append((file_path, '', key, item))
         return info
-
-
-class EmptyCheck(object):
-    def __init__(self, name, result):
-        self.num = 1
-        self.name = name
-        self.result = result
 
 
 def print_crossplatform(s):

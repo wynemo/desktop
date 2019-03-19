@@ -5,8 +5,8 @@ splitword::
 calc:==
 standard:V600R007SPH105
 
-rule:display version2
-keyword:V600R007SPH105
+rule:
+keyword:undo ssh
 splitword:
 calc:
 standard:
