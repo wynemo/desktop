@@ -116,14 +116,18 @@ def read_file(file_path, configs):
                                 result = check_result(check_rule['calc'], standard, result)
                                 s = 'path is %s, rule is %s, keyword is %s, result is %s' % (file_path, current_rule, keyword_result, result)
                                 info.append((file_path, current_rule, keyword_result, result))
-                                if sys.platform == 'win32':
-                                    try:
-                                        print(s.decode('gbk').encode('utf-8'))
-                                    except:
-                                        print(s)
-                                else:
-                                    print(s)
+                                print_crossplatform(s)
         return info
+
+
+def print_crossplatform(s):
+    if sys.platform == 'win32':
+        try:
+            print(s.decode('gbk').encode('utf-8'))
+        except:
+            print(s)
+    else:
+        print(s)
 
 
 def create_csv():
