@@ -110,6 +110,8 @@ def read_file(file_path, configs):
                                     file_path, current_rule, keyword_result, result)
                                 info.append((file_path, current_rule, keyword_result, result))
                                 print_crossplatform(s)
+            if not configs.get('', None):
+                continue
             for each in configs['']:
                 keyword = each['keyword']
                 o = re.search(keyword, line)
