@@ -618,7 +618,8 @@ stanard:llll
                     host: host,
                     username: user,
                     password: password,
-                    shellPrompt: /(:~[^$]*\$)|(\w+>)\s*$/
+                    shellPrompt: /(:~[^$]*\$|\w+>)\s*$/,
+                    loginPrompt: /(login|username)[: ]*$/i,
                 }
             }
 
