@@ -35,5 +35,6 @@ notifications:
   email:
     recipients:
       - wynemo@126.com
+      - nixinyu123@139.com
     on_success: always # default: change
     on_failure: always # default: always
