@@ -381,6 +381,7 @@ stanard:llll
         }
 
         function normalWork() {
+            console.log('normalWork')
 
             document.getElementById('set_file_path').addEventListener('click', function () {
                 dialog.showOpenDialog({ properties: ['openFile', 'openDirectory'] }, function (fileName) {
@@ -576,21 +577,15 @@ stanard:llll
             }, false);
 
             function get_ssh_options(line) {
-                let pos1 = line.indexOf(":")
-                if (pos1 === -1) {
-                    return undefined;
+                line = line.trim()
+                let texts = line.split(' ')
+                if (texts.length !== 3) {
+                    return undefined
                 }
-                let user = line.substr(0, pos1);
-                let pos2 = line.indexOf('@')
-                if (pos2 === -1) {
-                    return undefined;
-                }
-                let password = line.substr(pos1 + 1, pos2 - pos1 - 1)
-                let host = line.substr(pos2 + 1)
                 return {
-                    host: host,
-                    username: user,
-                    password: password,
+                    host: texts[2],
+                    username: texts[0],
+                    password: texts[1],
                     algorithms: {
                         cipher: ['aes128-cbc', 'blowfish-cbc', '3des-cbc', 'aes128-ctr', 'aes192-ctr', 'aes256-ctr', 'aes128-gcm', 'aes256-gcm'],
                         kex: ['diffie-hellman-group-exchange-sha1', 'diffie-hellman-group1-sha1', 'ecdh-sha2-nistp256', 'ecdh-sha2-nistp384', 'ecdh-sha2-nistp521', 'diffie-hellman-group-exchange-sha256', 'diffie-hellman-group14-sha1']
@@ -600,24 +595,18 @@ stanard:llll
             }
 
             function get_telnet_options(line) {
-                let pos1 = line.indexOf(":")
-                if (pos1 === -1) {
-                    return undefined;
+                line = line.trim()
+                let texts = line.split(' ')
+                if (texts.length !== 3) {
+                    return undefined
                 }
-                let user = line.substr(0, pos1);
-                let pos2 = line.indexOf('@')
-                if (pos2 === -1) {
-                    return undefined;
-                }
-                let password = line.substr(pos1 + 1, pos2 - pos1 - 1)
-                let host = line.substr(pos2 + 1)
                 return {
                     timeout: 5000,
                     execTimeout: 2000,
                     sendTimeout: 2000,
-                    host: host,
-                    username: user,
-                    password: password,
+                    host: texts[2],
+                    username: texts[0],
+                    password: texts[1],
                     shellPrompt: /(:~[^$]*\$|\w+>)\s*$/,
                     loginPrompt: /(login|username)[: ]*$/i,
                 }
