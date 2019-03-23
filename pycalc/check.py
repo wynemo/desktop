@@ -117,13 +117,13 @@ def read_file(file_path, configs):
                 o = re.search(keyword, line)
                 if o is not None:
                     if keyword not in empty_checks:
-                        empty_checks[keyword] = 1
+                        empty_checks[keyword] = [line]
                     else:
-                        empty_checks[keyword] += 1
+                        empty_checks[keyword].append(line)
         for key, item in empty_checks.iteritems():
-            s = 'path is %s, rule is %s, keyword is %s, result is %s' % (file_path, '', key, item)
+            s = 'path is %s, rule is %s, keyword is %s, result is %s, lines are %s' % (file_path, '', key, len(item), ', '.join(item))
             print_crossplatform(s)
-            info.append((file_path, '', key, item, ''))
+            info.append((file_path, '', key, len(item), ', '.join(item)))
         return info
 
 
