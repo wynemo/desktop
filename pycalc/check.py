@@ -106,9 +106,9 @@ def read_file(file_path, configs):
                             if check_rule['standard']:
                                 standard = check_rule['standard']
                                 result = check_result(check_rule['calc'], standard, result)
-                                s = 'path is %s, rule is %s, keyword is %s, result is %s' % (
-                                    file_path, current_rule, keyword_result, result)
-                                info.append((file_path, current_rule, keyword_result, result))
+                                s = 'path is %s, rule is %s, keyword is %s, result is %s, line is %s' % (
+                                    file_path, current_rule, keyword_result, result, line)
+                                info.append((file_path, current_rule, keyword_result, result, line))
                                 print_crossplatform(s)
             if not configs.get('', None):
                 continue
@@ -123,7 +123,7 @@ def read_file(file_path, configs):
         for key, item in empty_checks.iteritems():
             s = 'path is %s, rule is %s, keyword is %s, result is %s' % (file_path, '', key, item)
             print_crossplatform(s)
-            info.append((file_path, '', key, item))
+            info.append((file_path, '', key, item, ''))
         return info
 
 
@@ -154,11 +154,12 @@ def try_to_get_unicode(s):
 
 
 def write_sheet(info, row):
-    for file_path1, current_rule, keyword_result, result in info:
+    for file_path1, current_rule, keyword_result, result, line in info:
         file_path1 = try_to_get_unicode(file_path1)
         current_rule = try_to_get_unicode(current_rule)
         keyword_result = try_to_get_unicode(keyword_result)
         result = try_to_get_unicode(result)
+        line = try_to_get_unicode(line)
         col = 0
         sheet.write(row, col, file_path1)
         col += 1
@@ -167,6 +168,8 @@ def write_sheet(info, row):
         sheet.write(row, col, keyword_result)
         col += 1
         sheet.write(row, col, result)
+        col += 1
+        sheet.write(row, col, line)
         row += 1
 
 
