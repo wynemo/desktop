@@ -121,9 +121,9 @@ def read_file(file_path, configs):
                     else:
                         empty_checks[keyword].append(line)
         for key, item in empty_checks.iteritems():
-            s = 'path is %s, rule is %s, keyword is %s, result is %s, lines are %s' % (file_path, '', key, len(item), ', '.join(item))
+            s = 'path is %s, rule is %s, keyword is %s, result is %s, lines are %s' % (file_path, '', key, len(item), '\n'.join(item))
             print_crossplatform(s)
-            info.append((file_path, '', key, len(item), ', '.join(item)))
+            info.append((file_path, '', key, len(item), '\n'.join(item)))
         return info
 
 
