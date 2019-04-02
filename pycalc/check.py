@@ -2,6 +2,7 @@
 import os
 import re
 import sys
+from difflib import SequenceMatcher
 
 import xlwt
 
@@ -15,6 +16,10 @@ keyword_prefix = 'keyword:'
 splitword_prefix = 'splitword:'
 calc_prefix = 'calc:'
 standard_prefix = 'standard:'
+
+
+def similar(a, b):
+    return SequenceMatcher(None, a, b).ratio()
 
 
 def read_config(path):
@@ -82,9 +87,13 @@ def read_file(file_path, configs):
             if o is not None:
                 rule = o.group(1)
                 rule = rule.strip()
-                if rule in configs:
-                    current_rule = rule
-                else:
+                found = False
+                for key in configs:
+                    if similar(key, rule) > 0.5:
+                        found = True
+                        current_rule = key
+                        break
+                if not found:
                     current_rule = None
             else:
                 if current_rule is not None:

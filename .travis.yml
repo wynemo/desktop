@@ -30,6 +30,8 @@ deploy:
   api_key: 'ccc63df3cd195a3dbd199e73bd8a2762326e3b35'
   file: 'managment_software.zip'
   skip_cleanup: true
+  on:
+    tagss: true
 
 notifications:
   email:
