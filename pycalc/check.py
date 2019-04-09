@@ -18,8 +18,32 @@ calc_prefix = 'calc:'
 standard_prefix = 'standard:'
 
 
-def similar(a, b):
+def _similar(a, b):
     return SequenceMatcher(None, a, b).ratio()
+
+
+def filter_space(s):
+    rv = []
+    for each in s:
+        if each.strip():
+            rv.append(each)
+    return rv
+
+
+def similar(a, b):
+    a = a.strip()
+    b = b.strip()
+    words_a = a.split(' ')
+    words_b = b.split(' ')
+    words_a = filter_space(words_a)
+    words_b = filter_space(words_b)
+    if not len(words_a) == len(words_b) or len(words_b) == 0:
+        return 0
+    for _a, _b in zip(words_a, words_b):
+        _similarity = _similar(_a, _b)
+        if _b not in _a and _similarity < 0.5:
+            return 0
+    return 1
 
 
 def read_config(path):
@@ -91,11 +115,13 @@ def read_file(file_path, configs):
                 found_rule, similarity = None, 0
                 for key in configs:
                     _similarity = similar(key, rule)
-                    if _similarity > 0.5 and _similarity > similarity:
+                    if _similarity > 0 and _similarity > similarity:
                         found_rule = key
                         similarity = _similarity
                 if similarity > 0:
                     current_rule = found_rule
+                else:
+                    current_rule = None
             else:
                 if current_rule is not None:
                     check_rules = configs[current_rule]
