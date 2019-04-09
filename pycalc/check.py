@@ -62,7 +62,7 @@ def check_result(calc, standard, result):
         standard = '\'' + standard + '\''
     if not result.isdigit():
         result = '\'' + result + '\''
-    s = result + calc + standard
+    s = result.lower() + calc + standard.lower()
     return eval(s)
 
 
@@ -84,7 +84,7 @@ def read_file(file_path, configs):
             line = line.strip()
             if not line:
                 continue
-            o = re.search(pattern, line)
+            o = re.search(pattern, line, flags=re.I)
             if o is not None:
                 rule = o.group(1)
                 rule = rule.strip()
@@ -101,11 +101,11 @@ def read_file(file_path, configs):
                     check_rules = configs[current_rule]
                     for check_rule in check_rules:
                         keyword = check_rule['keyword']
-                        o = re.search(keyword, line)
+                        o = re.search(keyword, line, flags=re.I)
                         if o is not None:
                             keyword_result = o.group()
                             splitword_pattern = check_rule['splitword']
-                            o = re.search(splitword_pattern, line)
+                            o = re.search(splitword_pattern, line, flags=re.I)
                             if o is not None:
                                 splitword = o.group()
                                 pos = keyword_result.find(splitword)
@@ -124,7 +124,7 @@ def read_file(file_path, configs):
                 continue
             for each in configs['']:
                 keyword = each['keyword']
-                o = re.search(keyword, line)
+                o = re.search(keyword, line, flags=re.I)
                 if o is not None:
                     if keyword not in empty_checks:
                         empty_checks[keyword] = [line]
