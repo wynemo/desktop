@@ -88,14 +88,14 @@ def read_file(file_path, configs):
             if o is not None:
                 rule = o.group(1)
                 rule = rule.strip()
-                found = False
+                found_rule, similarity = None, 0
                 for key in configs:
-                    if similar(key, rule) > 0.5:
-                        found = True
-                        current_rule = key
-                        break
-                if not found:
-                    current_rule = None
+                    _similarity = similar(key, rule)
+                    if _similarity > 0.5 and _similarity > similarity:
+                        found_rule = key
+                        similarity = _similarity
+                if similarity > 0:
+                    current_rule = found_rule
             else:
                 if current_rule is not None:
                     check_rules = configs[current_rule]
