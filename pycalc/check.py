@@ -77,6 +77,7 @@ def read_file(file_path, configs):
     empty_checks = {}
     with open(file_path, 'rb') as f:
         s = f.read()
+        s = re.sub('\s*?\<[\w-]+?\>\s+(?:<)', lambda _: '', s, flags=re.M)
         s = re.sub('\s*?\<[\w-]+?\>\r\n', replace_carriage, s)
 
         for line in s.splitlines():
