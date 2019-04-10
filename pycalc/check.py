@@ -39,11 +39,14 @@ def similar(a, b):
     words_b = filter_space(words_b)
     if not len(words_a) == len(words_b) or len(words_b) == 0:
         return 0
+    _similarities = []
     for _a, _b in zip(words_a, words_b):
         _similarity = _similar(_a, _b)
-        if _b not in _a and _similarity < 0.5:
+        if _b not in _a and _similarity < 0.8:
             return 0
-    return 1
+        else:
+            _similarities.append(_similarity)
+    return sum(_similarities) * 1.0 / len(_similarities)
 
 
 def read_config(path):
@@ -95,6 +98,7 @@ def replace_carriage(match):
 
 
 def read_file(file_path, configs):
+    used_rules = set()
     pattern = '\<[\w-]+?\>(.+)'
     current_rule = None
     info = []
@@ -145,6 +149,7 @@ def read_file(file_path, configs):
                                 s = 'path is %s, rule is %s, keyword is %s, result is %s, line is %s' % (
                                     file_path, current_rule, keyword_result, result, line)
                                 info.append((file_path, current_rule, keyword_result, result, line))
+                                used_rules.add(current_rule)
                                 print_crossplatform(s)
             if not configs.get('', None):
                 continue
@@ -160,7 +165,11 @@ def read_file(file_path, configs):
             s = 'path is %s, rule is %s, keyword is %s, result is %s, lines are %s' % (file_path, '', key, len(item), '\n'.join(item))
             print_crossplatform(s)
             info.append((file_path, '', key, len(item), '\n'.join(item)))
-        return info
+        unused_rules = []
+        for _rule in configs:
+            if _rule not in used_rules:
+                unused_rules.append(_rule)
+        return unused_rules, info
 
 
 def print_crossplatform(s):
@@ -209,6 +218,12 @@ def write_sheet(info, row):
         row += 1
 
 
+def write_unused_rules_sheet(unused_rules, file_path, row):
+    for rule in unused_rules:
+        sheet.write(row, 0, 'unused rule: "%s" in file %s' % (rule, file_path))
+        row += 1
+
+
 if __name__ == '__main__':
     rule_path = sys.argv[1]
     configs = read_config(rule_path)
@@ -221,17 +236,19 @@ if __name__ == '__main__':
     sheet.write(row, 3, u'检查结果')
     row = 1
     if os.path.isfile(file_path):
-        info = read_file(file_path, configs)
-        if info:
-            write_sheet(info, row)
-            row += len(info)
+        _unused_rules, info = read_file(file_path, configs)
+        write_sheet(info, row)
+        row += len(info)
+        write_unused_rules_sheet(_unused_rules, file_path, row)
+        row += len(_unused_rules)
     elif os.path.isdir(file_path):
         for each in os.listdir(file_path):
             sub_path = os.path.join(file_path, each)
-            info = read_file(sub_path, configs)
-            if info:
-                write_sheet(info, row)
-                row += len(info)
+            _unused_rules, info = read_file(sub_path, configs)
+            write_sheet(info, row)
+            row += len(info)
+            write_unused_rules_sheet(_unused_rules, sub_path, row)
+            row += len(_unused_rules)
     path = './results.xls'
     abs_path = os.path.abspath(path)
     if sys.platform == 'win32':
