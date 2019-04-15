@@ -220,9 +220,16 @@ stanard:llll
                     </div>
                     <textarea id="check_result" name="模块" rows="5" cols="33" style="width: 90%"></textarea>
                     <div class="row">
-                        <button type="button" class="btn btn-success" id="export_check_result">
-                             导出核查结果
-                        </button>
+                        <div class="col-md-6">
+                            <button type="button" class="btn btn-success" id="export_check_result">
+                                导出核查结果
+                            </button>
+                        </div>
+                        <div class="col-md-6">
+                            <button type="button" class="btn btn-success" id="open_excel">
+                                打开核查表格
+                            </button>
+                        </div>
                     </div>
 
                 </div>
@@ -574,6 +581,16 @@ stanard:llll
                         });
                     }
                 });
+            }, false);
+
+            document.getElementById('open_excel').addEventListener('click', function () {
+                let content = document.getElementById("check_result").value;
+                let myRe = /^.*xls$/gm;
+                let found = content.match(myRe);
+                if (found !== null) {
+                    const {shell} = require('electron');
+                    shell.openItem(found[0]);
+                }
             }, false);
 
             function get_ssh_options(line) {
